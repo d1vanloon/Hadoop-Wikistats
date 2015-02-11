@@ -1,0 +1,25 @@
+# To set up itasca to be able to push to github:
+
+# First change your git configuration to have your itasca account to use your github user name and email
+$ git config --global user.email christensen.t.eric@gmail.com
+$ git config --global user.name EricChristensen
+
+# Navigate into your .ssh directory from your home directory
+$ cd ~/.ssh
+
+# There are two files located in a directory called "group1" in lustre: "gitssh" and "gitssh.pub"
+# the wikifile folder is also in this directory, but that's not important
+# Copy "gitssh" and "gitssh.pub" into your .ssh folder
+$ cp ~/../../../../lustre/group1/gitssh .
+$ cp ~/../../../../lustre/group1/gitssh.pub .
+
+# Navigate to your home directory
+$ cd ~
+# and then do these two commands:
+$ eval "$(ssh-agent -s)"
+$ ssh-add ~/.ssh/gitssh
+
+#Then when you are cloning the git repository, make sure to clone ssh version
+$ git clone git@github.com:EricChristensen/Hadoop-Wikistats.git
+
+# And hopefully this takes care of things!
