@@ -19,7 +19,7 @@ $ cd ~
 $ eval "$(ssh-agent -s)"
 $ ssh-add ~/.ssh/gitssh
 
-#Then when you are cloning the git repository, make sure to clone ssh version
+# Then when you are cloning the git repository, make sure to clone ssh version
 $ git clone git@github.com:EricChristensen/Hadoop-Wikistats.git
 
 # And hopefully this takes care of things!
