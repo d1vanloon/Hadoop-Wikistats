@@ -7,12 +7,14 @@
  *
  **/
 
+package org.apache.hadoop.examples;
+
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 
-public static class WikiReducer
-    extends Reducer<Text, IntWritable, Text, IntWritable> {
+public class WikiReducer
+    /*extends Reducer<Text, IntWritable, Text, IntWritable>*/ {
     
     /**
      * arguments:
@@ -23,6 +25,8 @@ public static class WikiReducer
      * Note for Values:
      *    There will 24 hour datums for each day
      *    There will be 60 days of data for each Key
+     *    So there will be 1440 total value datums in values
+     *    All of these will be on one line as a Text data type
      *
      * Goal:
      *    Find the largest spike (increase in page views) for all 5 day intervals
@@ -38,7 +42,18 @@ public static class WikiReducer
      * Output:
      *    Max spike, Key
      **/
-    public void reduce(Text key, Iterable<IntWritable> values, Context context) {
+    public void reduce(Text key, Iterable<Text> values, Context context) {
+	
+	int[] days = new int[60];
+	
 
+
+	for (int i = 0; i < days.length; i++) {
+	    System.out.println("day " + i);
+	}
+    }
+
+    public static void main(String[] args) throws Exception {
+	System.out.println("Begining test");
     }
 }
