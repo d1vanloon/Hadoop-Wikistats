@@ -2,8 +2,8 @@
 Project 1 for CS5621 at the University of Minnesota, Duluth
 
 ## Deadlines
-* Confirm data access by 2/13
-* Finalize job interfaces by 2/13 (see below)
+* ~~Confirm data access by 2/13~~
+* ~~Finalize job interfaces by 2/13 (see below)~~
 * Basic project structure in place by 2/16
 
 ## Architecture
