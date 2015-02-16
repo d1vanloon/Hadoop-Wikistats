@@ -50,6 +50,8 @@ public class WikiStatsJob1Mapper extends
 		 * 
 		 * The data is stored in files with the following name format:
 		 * 	pagecounts-${YEAR}${MONTH}${DAY}-${HOUR}0000.gz
+		 * For example:
+		 * 	pagecounts-20140601-000000.gz
 		 */
 		
 		/*
