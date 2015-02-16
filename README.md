@@ -15,7 +15,15 @@ Two MapReduce jobs:
 
 <table>
 <tr><td>Job</td><td>Output of Map (Input of Reduce)</td><td>Output of Job (Input of Next Job)</td></tr>
-<tr><td>1</td><td>Key: language + page<br/>Value: date + hour + pageviews</td><td>Key: language + page<br/>Value: spike</td></tr>
+<tr>
+    <td>1</td>
+    <td>Key: language + page
+        <br/>The language is a two-character string. The page name is a string of characters.
+        <br/>The language and page are separated by a space.
+        <br/>Example: "en Main_Page"
+        <br/>Value: date + hour + pageviews</td>
+    <td>Key: language + page<br/>Value: spike</td>
+    </tr>
 <tr><td>2</td><td>Key: language<br/>Value: page + spike</td><td>TBD</td></tr>
 </table>
 
