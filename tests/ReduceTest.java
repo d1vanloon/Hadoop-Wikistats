@@ -41,8 +41,8 @@ public class ReduceTest {
 	    System.out.println("Position: " + i + " " + days[i]);
 	}
 	reduce(days);
-	days[10] = 0;
+	/*	days[10] = 0;
 	days[13] = 100000;
-	reduce(days);
+	reduce(days);*/
     }
 }
