@@ -18,6 +18,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 public class WikiStatsJob1Mapper extends
 		Mapper<LongWritable, Text, Text, Text> {
 	
+	private static final int FILE_NAME_TOKENS_COUNT = 3;
+	private static final int LANGUAGE_CHAR_LENGTH = 2;
 	private static final int HOUR_END_INDEX = 2;
 	private static final int HOUR_BEGIN_INDEX = 0;
 	private static final String FILE_NAME_TOKEN_DELIMITER = "[-]+";
@@ -65,6 +67,8 @@ public class WikiStatsJob1Mapper extends
 		// We should have 4 tokens
 		assert(tokens.length == LINE_TOKENS_COUNT);
 		
+		System.out.println("Input line: " + line);
+		
 		/*
 		 * Parse the input file name
 		 */
@@ -75,16 +79,23 @@ public class WikiStatsJob1Mapper extends
 		assert(fileName.startsWith(PAGECOUNTS));
 		String[] fileNameTokens = fileName.split(FILE_NAME_TOKEN_DELIMITER);
 		// We should have 3 tokens
-		assert(fileNameTokens.length == 3);
+		assert(fileNameTokens.length == FILE_NAME_TOKENS_COUNT);
 		// Remove extra data from the hour token
 		fileNameTokens[HOUR_INDEX] = fileNameTokens[HOUR_INDEX].substring(HOUR_BEGIN_INDEX, HOUR_END_INDEX);
+		
+		System.out.println("File name: " + fileName);
 		
 		/*
 		 * Send the data to the reducer
 		 */
 		
 		// Only process languages with two-letter codes
-		if (tokens[LANGUAGE_INDEX].length() == 2) {
+		if (tokens[LANGUAGE_INDEX].length() == LANGUAGE_CHAR_LENGTH) {
+			System.out.printf("Output data: (\"%s\", \"%s\")", String.format(
+					"%1$s %2$s", tokens[LANGUAGE_INDEX],
+					tokens[PAGE_NAME_INDEX]), String.format("%1$s %2$s %3$s",
+					fileNameTokens[DATE_INDEX], fileNameTokens[HOUR_INDEX],
+					tokens[VIEWS_INDEX]));
 			context.write(
 					new Text(
 							String.format("%1$s %2$s", 
