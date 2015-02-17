@@ -5,10 +5,16 @@ package cs5621.hadoop.wikistats;
 
 import java.io.IOException;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.util.GenericOptionsParser;
 
 /**
  * Mapper for Job 1.
@@ -18,6 +24,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 public class WikiStatsJob1Mapper extends
 		Mapper<LongWritable, Text, Text, Text> {
 	
+	private static final int FILE_NAME_TOKENS_COUNT = 3;
+	private static final int LANGUAGE_CHAR_LENGTH = 2;
 	private static final int HOUR_END_INDEX = 2;
 	private static final int HOUR_BEGIN_INDEX = 0;
 	private static final String FILE_NAME_TOKEN_DELIMITER = "[-]+";
@@ -65,6 +73,8 @@ public class WikiStatsJob1Mapper extends
 		// We should have 4 tokens
 		assert(tokens.length == LINE_TOKENS_COUNT);
 		
+		System.out.println("Input line: " + line);
+		
 		/*
 		 * Parse the input file name
 		 */
@@ -75,16 +85,23 @@ public class WikiStatsJob1Mapper extends
 		assert(fileName.startsWith(PAGECOUNTS));
 		String[] fileNameTokens = fileName.split(FILE_NAME_TOKEN_DELIMITER);
 		// We should have 3 tokens
-		assert(fileNameTokens.length == 3);
+		assert(fileNameTokens.length == FILE_NAME_TOKENS_COUNT);
 		// Remove extra data from the hour token
 		fileNameTokens[HOUR_INDEX] = fileNameTokens[HOUR_INDEX].substring(HOUR_BEGIN_INDEX, HOUR_END_INDEX);
+		
+		System.out.println("File name: " + fileName);
 		
 		/*
 		 * Send the data to the reducer
 		 */
 		
 		// Only process languages with two-letter codes
-		if (tokens[LANGUAGE_INDEX].length() == 2) {
+		if (tokens[LANGUAGE_INDEX].length() == LANGUAGE_CHAR_LENGTH) {
+			System.out.printf("Output data: (\"%s\", \"%s\")", String.format(
+					"%1$s %2$s", tokens[LANGUAGE_INDEX],
+					tokens[PAGE_NAME_INDEX]), String.format("%1$s %2$s %3$s",
+					fileNameTokens[DATE_INDEX], fileNameTokens[HOUR_INDEX],
+					tokens[VIEWS_INDEX]));
 			context.write(
 					new Text(
 							String.format("%1$s %2$s", 
@@ -97,5 +114,22 @@ public class WikiStatsJob1Mapper extends
 		}
 	}
 
+	public static void main(String[] args) throws Exception {
+		Configuration conf = new Configuration();
+		String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
+		if (otherArgs.length != 2) {
+		      System.err.println("Usage: WikiStatsJob1Mapper <in> <out>");
+		      System.exit(2);
+		    }
+		    Job job = new Job(conf, "word count");
+		    job.setJarByClass(WikiStatsJob1Mapper.class);
+		    job.setMapperClass(WikiStatsJob1Mapper.class);
+		    job.setOutputKeyClass(Text.class);
+		    job.setOutputValueClass(Text.class);
+		    job.setNumReduceTasks(0);
+		    FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
+		    FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
+		    System.exit(job.waitForCompletion(true) ? 0 : 1);
+	}
 	
 }
