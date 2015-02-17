@@ -10,8 +10,8 @@ $ cd ~/.ssh
 # There are two files located in a directory called "group1" in lustre: "gitssh" and "gitssh.pub"
 # the wikifile folder is also in this directory, but that's not important
 # Copy "gitssh" and "gitssh.pub" into your .ssh folder
-$ cp ~/../../../../lustre/group1/gitssh .
-$ cp ~/../../../../lustre/group1/gitssh.pub .
+$ cp /lustre/group1/gitssh .
+$ cp /lustre/group1/gitssh.pub .
 
 # Navigate to your home directory
 $ cd ~
