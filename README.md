@@ -20,7 +20,7 @@ Two MapReduce jobs:
         <br/>The language and page are separated by a space.
         <br/>Example: "en Main_Page"
         <br/>Value: date + hour + pageviews
-        <br/>The date is an 8-character string. The hour is a two-character string. Pageviews is a string of characters.
+        <br/>The date is an 8-character string in the form YYYYMMDD. The hour is a two-character string. Pageviews is a string of characters.
         <br/>The date, hour, and pageviews are separated by spaces.
         <br/>Example: "20140601 00 156"</td>
     <td>Key: language + page<br/>Value: spike:
