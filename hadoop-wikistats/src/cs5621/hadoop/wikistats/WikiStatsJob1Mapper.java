@@ -62,56 +62,62 @@ public class WikiStatsJob1Mapper extends
 		 * 	pagecounts-20140601-000000.gz
 		 */
 		
-		/*
-		 * Parse the input line
-		 */
+		String line = "";
+		String fileName;
 		
-		// Grab the current line as a String from the input value
-		String line = value.toString();
-		// Split the line into tokens by spaces
-		String[] tokens = line.split(INPUT_LINE_TOKEN_DELIMITER);
-		// We should have 4 tokens
-		assert(tokens.length == LINE_TOKENS_COUNT);
-		
-		System.out.println("Input line: " + line);
-		
-		/*
-		 * Parse the input file name
-		 */
-		
-		// Get the file name of the input file
-		String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
-		
-		System.out.println("File name: " + fileName);
-		
-		// The file name should begin with "pagecounts"
-		assert(fileName.startsWith(PAGECOUNTS));
-		String[] fileNameTokens = fileName.split(FILE_NAME_TOKEN_DELIMITER);
-		// We should have 3 tokens
-		assert(fileNameTokens.length == FILE_NAME_TOKENS_COUNT);
-		// Remove extra data from the hour token
-		fileNameTokens[HOUR_INDEX] = fileNameTokens[HOUR_INDEX].substring(HOUR_BEGIN_INDEX, HOUR_END_INDEX);
-		
-		/*
-		 * Send the data to the reducer
-		 */
-		
-		// Only process languages with two-letter codes
-		if (tokens[LANGUAGE_INDEX].length() == LANGUAGE_CHAR_LENGTH) {
-			System.out.printf("Output data: (\"%s\", \"%s\")", String.format(
-					"%1$s %2$s", tokens[LANGUAGE_INDEX],
-					tokens[PAGE_NAME_INDEX]), String.format("%1$s %2$s %3$s",
-					fileNameTokens[DATE_INDEX], fileNameTokens[HOUR_INDEX],
-					tokens[VIEWS_INDEX]));
-			context.write(
-					new Text(
-							String.format("%1$s %2$s", 
-									tokens[LANGUAGE_INDEX], 
-									tokens[PAGE_NAME_INDEX])), 
-					new Text(String.format("%1$s %2$s %3$s", 
-									fileNameTokens[DATE_INDEX], 
-									fileNameTokens[HOUR_INDEX], 
-									tokens[VIEWS_INDEX])));
+		try {
+			
+			/*
+			 * Parse the input line
+			 */
+			
+			// Grab the current line as a String from the input value
+			line = value.toString();
+			// Split the line into tokens by spaces
+			String[] tokens = line.split(INPUT_LINE_TOKEN_DELIMITER);
+			// We should have 4 tokens
+			assert(tokens.length == LINE_TOKENS_COUNT);
+			
+			/*
+			 * Parse the input file name
+			 */
+			
+			// Get the file name of the input file
+			fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
+			// The file name should begin with "pagecounts"
+			assert(fileName.startsWith(PAGECOUNTS));
+			String[] fileNameTokens = fileName.split(FILE_NAME_TOKEN_DELIMITER);
+			// We should have 3 tokens
+			assert(fileNameTokens.length == FILE_NAME_TOKENS_COUNT);
+			// Remove extra data from the hour token
+			fileNameTokens[HOUR_INDEX] = fileNameTokens[HOUR_INDEX].substring(HOUR_BEGIN_INDEX, HOUR_END_INDEX);
+			
+			/*
+			 * Send the data to the reducer
+			 */
+			
+			// Only process languages with two-letter codes
+			if (tokens[LANGUAGE_INDEX].length() == LANGUAGE_CHAR_LENGTH) {
+				System.out.printf("Output data: (\"%s\", \"%s\")", String.format(
+						"%1$s %2$s", tokens[LANGUAGE_INDEX],
+						tokens[PAGE_NAME_INDEX]), String.format("%1$s %2$s %3$s",
+						fileNameTokens[DATE_INDEX], fileNameTokens[HOUR_INDEX],
+						tokens[VIEWS_INDEX]));
+				context.write(
+						new Text(
+								String.format("%1$s %2$s", 
+										tokens[LANGUAGE_INDEX], 
+										tokens[PAGE_NAME_INDEX])), 
+						new Text(String.format("%1$s %2$s %3$s", 
+										fileNameTokens[DATE_INDEX], 
+										fileNameTokens[HOUR_INDEX], 
+										tokens[VIEWS_INDEX])));
+			}
+		}
+		catch (Exception ex) {
+			System.out.println("Exception encountered.");
+			System.out.println("Input: " + line);
+			System.out.println("Exception details: " + ex.toString());
 		}
 	}
 
