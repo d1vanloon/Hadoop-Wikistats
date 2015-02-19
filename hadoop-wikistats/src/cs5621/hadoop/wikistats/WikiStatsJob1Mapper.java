@@ -81,6 +81,9 @@ public class WikiStatsJob1Mapper extends
 		
 		// Get the file name of the input file
 		String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
+		
+		System.out.println("File name: " + fileName);
+		
 		// The file name should begin with "pagecounts"
 		assert(fileName.startsWith(PAGECOUNTS));
 		String[] fileNameTokens = fileName.split(FILE_NAME_TOKEN_DELIMITER);
@@ -88,8 +91,6 @@ public class WikiStatsJob1Mapper extends
 		assert(fileNameTokens.length == FILE_NAME_TOKENS_COUNT);
 		// Remove extra data from the hour token
 		fileNameTokens[HOUR_INDEX] = fileNameTokens[HOUR_INDEX].substring(HOUR_BEGIN_INDEX, HOUR_END_INDEX);
-		
-		System.out.println("File name: " + fileName);
 		
 		/*
 		 * Send the data to the reducer
