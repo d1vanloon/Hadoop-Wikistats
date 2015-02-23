@@ -11,6 +11,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -24,6 +25,12 @@ import org.apache.hadoop.util.GenericOptionsParser;
  */
 public class WikiStatsJob1 {
 
+	/**
+	 * Mapper class for Job 1.
+	 * 
+	 * @author David Van Loon
+	 *
+	 */
 	public static class Job1Mapper extends
 			Mapper<LongWritable, Text, Text, Text> {
 
@@ -133,6 +140,16 @@ public class WikiStatsJob1 {
 				System.err.println("Exception details: " + ex.toString());
 			}
 		}
+	}
+	
+	/**
+	 * Reducer class for Job 1.
+	 * 
+	 * @author Eric Christensen
+	 *
+	 */
+	public static class Job1Reducer extends Reducer<Text, Text, Text, Text> {
+		// TODO: Implement Job1Reducer
 	}
 
 	public static void main(String[] args) throws Exception {
