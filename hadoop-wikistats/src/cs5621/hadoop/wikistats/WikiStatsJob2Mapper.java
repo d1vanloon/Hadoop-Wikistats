@@ -21,19 +21,19 @@ import org.apache.hadoop.util.GenericOptionsParser;
 
 public class WikiStatsJob2Mapper extends Mapper<Text, LongWritable, Text, Text>{
 
-    private Text aKey = new Text();
-    private Text aValue = new Text();
+    private Text langSpike = new Text();
+    private Text page = new Text();
 
     public void map(Text key, LongWritable value, Context context){
 	String temp = key.get();
 	String language = temp.substring(0, 2);
-	String page = temp.substring(3);
+	String pageStr = temp.substring(3);
 	String spike = Integer.toString(value.get());
 
-	aKey.set(language);
+	langSpike.set(language + "," + spike);
 
-	aValue.set(spike + "+" + page);
+	page.set(pageStr);
 
-	context.write(aKey, aValue);
+	context.write(langSpike, page);
     }
 }
