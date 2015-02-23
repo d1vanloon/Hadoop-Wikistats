@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cs5621.hadoop.wikistats;
+package cs5621.hadoop.wikistats.job1;
 
 import java.io.IOException;
 
