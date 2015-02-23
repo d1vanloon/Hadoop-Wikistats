@@ -65,6 +65,7 @@ public class WikiStats {
 		
 		Configuration job2Configuration = new Configuration();
 		Job job2 = Job.getInstance(job2Configuration, "wikistats job2");
+		// TODO: Conform job 2 to the following naming standards and uncomment.
 		//job2.setJarByClass(WikiStatsJob2.class);
 		//job2.setMapperClass(WikiStatsJob2.Job2Mapper.class);
 		//job2.setReducerClass(WikiStatsJob2.Job2Reducer.class);
