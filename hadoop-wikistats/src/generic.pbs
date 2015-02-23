@@ -38,12 +38,12 @@ PACKAGENAME=cs5621.hadoop.wikistats
 
 # *** you will need to modify CLASSNAME for each assignment ***
 
-CLASSNAME=WikiStatsJob1Mapper
+CLASSNAME=WikiStats
 
 # location of local input directory 
 # *** you will need to modify this for each assignment ***
 
-LOCALINPUT=/lustre/$USER/job1testdata/* 
+LOCALINPUT=/lustre/$USER/job1testdata/*
 
 # location of local output directory
 

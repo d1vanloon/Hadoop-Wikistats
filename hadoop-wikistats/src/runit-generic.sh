@@ -28,7 +28,7 @@ rm -fr generic.e
 
 # *** you will need to change this for each assignment ***
 
-CLASSNAME=WikiStatsJob1Mapper
+CLASSNAME=WikiStats
 
 # classes needed for hadoop - shouldn't usually need to change
 # unless you are using some specialized library functions 
