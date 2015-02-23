@@ -98,11 +98,17 @@ public class WikiStatsJob1Mapper extends
 			
 			// Only process languages with two-letter codes
 			if (tokens[LANGUAGE_INDEX].length() == LANGUAGE_CHAR_LENGTH) {
-				System.out.printf("Output data: (\"%s\", \"%s\")", String.format(
-						"%1$s %2$s", tokens[LANGUAGE_INDEX],
-						tokens[PAGE_NAME_INDEX]), String.format("%1$s %2$s %3$s",
-						fileNameTokens[DATE_INDEX], fileNameTokens[HOUR_INDEX],
-						tokens[VIEWS_INDEX]));
+				// Write the output to the reduce function.
+				/*
+				 * Key: language + page 
+				 * The language is a two-character string. The page name is a string of characters. 
+				 * The language and page are separated by a space. 
+				 * Example: "en Main_Page" 
+				 * Value: date + hour + pageviews 
+				 * The date is an 8-character string in the form YYYYMMDD. The hour is a two-character string. Pageviews is a string of characters. 
+				 * The date, hour, and pageviews are separated by spaces. 
+				 * Example: "20140601 00 156"
+				 */
 				context.write(
 						new Text(
 								String.format("%1$s %2$s", 
@@ -115,9 +121,9 @@ public class WikiStatsJob1Mapper extends
 			}
 		}
 		catch (Exception ex) {
-			System.out.println("Exception encountered.");
-			System.out.println("Input: " + line);
-			System.out.println("Exception details: " + ex.toString());
+			System.err.println("Exception encountered.");
+			System.err.println("Input: " + line);
+			System.err.println("Exception details: " + ex.toString());
 		}
 	}
 
