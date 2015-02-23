@@ -18,6 +18,7 @@ import org.apache.hadoop.util.GenericOptionsParser;
 
 /**
  * Mapper for Job 1.
+ * 
  * @author David Van Loon
  *
  */
