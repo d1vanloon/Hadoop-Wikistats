@@ -12,6 +12,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.jobcontrol.ControlledJob;
+import org.apache.hadoop.mapreduce.lib.jobcontrol.JobControl;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 /**
@@ -42,12 +43,15 @@ public class WikiStats {
 		// The output for job 2 is the second command-line argument.
 		Path job2OutputPath = new Path(args[1]);
 		
+		// Holds a list of configured jobs.
+		JobControl jobController = new JobControl("wikistats");
+		
 		/*
 		 * Set up Job 1:
 		 */
 
 		Configuration job1Configuration = new Configuration();
-		Job job1 = Job.getInstance(job1Configuration, "wikistats job1");
+		Job job1 = Job.getInstance(job1Configuration, "job1");
 		job1.setJarByClass(WikiStatsJob1.class);
 		job1.setMapperClass(WikiStatsJob1.Job1Mapper.class);
 		job1.setReducerClass(WikiStatsJob1.Job1Reducer.class);
@@ -58,13 +62,15 @@ public class WikiStats {
 		// Job 1 does not have any dependencies.
 		ArrayList<ControlledJob> job1Dependencies = new ArrayList<ControlledJob>();
 		ControlledJob job1Control = new ControlledJob(job1, job1Dependencies);
+		// Add the configured job 1 to the job controller.
+		jobController.addJob(job1Control);
 		
 		/*
 		 * Set up Job 2:
 		 */
 		
 		Configuration job2Configuration = new Configuration();
-		Job job2 = Job.getInstance(job2Configuration, "wikistats job2");
+		Job job2 = Job.getInstance(job2Configuration, "job2");
 		// TODO: Conform job 2 to the following naming standards and uncomment.
 		//job2.setJarByClass(WikiStatsJob2.class);
 		//job2.setMapperClass(WikiStatsJob2.Job2Mapper.class);
@@ -77,5 +83,19 @@ public class WikiStats {
 		ArrayList<ControlledJob> job2Dependencies = new ArrayList<ControlledJob>();
 		job2Dependencies.add(job1Control);
 		ControlledJob job2Control = new ControlledJob(job2, job2Dependencies);
+		// Add the configured job 2 to the job controller.
+		jobController.addJob(job2Control);
+		
+		/*
+		 * Run the configured jobs.
+		 */
+		
+		jobController.run();
+		
+		// While jobs are still running...
+		while (!jobController.allFinished()) {
+			// Wait 5 seconds and check again.
+			Thread.sleep(5000);
+		}
 	}
 }
