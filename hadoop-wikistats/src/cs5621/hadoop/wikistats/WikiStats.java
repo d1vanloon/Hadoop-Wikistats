@@ -3,6 +3,9 @@
  */
 package cs5621.hadoop.wikistats;
 
+import java.awt.List;
+import java.util.ArrayList;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
@@ -52,6 +55,26 @@ public class WikiStats {
 		job1.setOutputValueClass(Text.class);
 		FileInputFormat.addInputPath(job1, job1InputPath);
 		FileOutputFormat.setOutputPath(job1, job1OutputPath);
-		ControlledJob job1Control = new ControlledJob(job1, null);
+		// Job 1 does not have any dependencies.
+		ArrayList<ControlledJob> job1Dependencies = new ArrayList<ControlledJob>();
+		ControlledJob job1Control = new ControlledJob(job1, job1Dependencies);
+		
+		/*
+		 * Set up Job 2:
+		 */
+		
+		Configuration job2Configuration = new Configuration();
+		Job job2 = Job.getInstance(job2Configuration, "wikistats job2");
+		//job2.setJarByClass(WikiStatsJob2.class);
+		//job2.setMapperClass(WikiStatsJob2.Job2Mapper.class);
+		//job2.setReducerClass(WikiStatsJob2.Job2Reducer.class);
+		job2.setOutputKeyClass(Text.class);
+		job2.setOutputValueClass(Text.class);
+		FileInputFormat.addInputPath(job2, job2InputPath);
+		FileOutputFormat.setOutputPath(job2, job2OutputPath);
+		// Job 2 is dependent on job 1.
+		ArrayList<ControlledJob> job2Dependencies = new ArrayList<ControlledJob>();
+		job2Dependencies.add(job1Control);
+		ControlledJob job2Control = new ControlledJob(job2, job2Dependencies);
 	}
 }
