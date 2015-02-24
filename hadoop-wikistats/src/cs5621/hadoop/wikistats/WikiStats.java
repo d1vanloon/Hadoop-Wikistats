@@ -76,6 +76,9 @@ public class WikiStats {
 		//job2.setMapperClass(WikiStatsJob2.Job2Mapper.class);
 		//job2.setReducerClass(WikiStatsJob2.Job2Reducer.class);
 		job2.setOutputKeyClass(Text.class);
+		job2.setPartitionerClass(ActualKeyPartitioner.class);
+		job2.setGroupingComparatorClass(ActualKeyGroupingComparator.class);
+		job2.setSortComparatorClass(CompositeKeyComparator.class);
 		job2.setOutputValueClass(Text.class);
 		FileInputFormat.addInputPath(job2, job2InputPath);
 		FileOutputFormat.setOutputPath(job2, job2OutputPath);
