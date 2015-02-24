@@ -202,26 +202,28 @@ public class WikiStatsJob1 {
 	     * A private method to parse the data reduce expects to perform calculations on better
 	     */
 		private void parserSet(Iterable<Text> data) {
-		List<Text> days = new ArrayList<Text>();
-		List<IntWritable> values = new ArrayList<IntWritable>();
+			List<Text> dummydays = new ArrayList<Text>();
+			List<IntWritable> dummyvalues = new ArrayList<IntWritable>();
 
-		for (Text line : data){
-		    String[] words = line.toString().split(" ");
-		    Text dayToAdd  = new Text(words[0]);
-		    IntWritable intToAdd = new IntWritable(Integer.parseInt(words[2]));
-	    
-		    if (!days.contains(dayToAdd)){
-			days.add(dayToAdd);
-			values.add(intToAdd);
-		    } else {
-			IntWritable valueToAdd = new IntWritable(values.get(days.indexOf(dayToAdd)).get() + 
-								 intToAdd.get());
-			values.set(days.indexOf(dayToAdd), valueToAdd);
-		    }
+			for (Text line : data) {
+				String[] words = line.toString().split(" ");
+				Text dayToAdd = new Text(words[0]);
+				IntWritable intToAdd = new IntWritable(
+						Integer.parseInt(words[2]));
+
+				if (!dummydays.contains(dayToAdd)) {
+					dummydays.add(dayToAdd);
+					dummyvalues.add(intToAdd);
+				} else {
+					IntWritable valueToAdd = new IntWritable(dummyvalues.get(
+							dummydays.indexOf(dayToAdd)).get()
+							+ intToAdd.get());
+					dummyvalues.set(dummydays.indexOf(dayToAdd), valueToAdd);
+				}
+			}
+			days = new ArrayList<Text>(dummydays);
+			values = new ArrayList<IntWritable>(dummyvalues);
 		}
-		days = new ArrayList<Text>(days);
-		values = new ArrayList<IntWritable>(values);
-	    }
 
 	    private void setSpike(){
 		IntWritable greatestSpikeA = new IntWritable(0);
