@@ -153,11 +153,11 @@ public class WikiStatsJob1 {
 	 */
 	public static class Job1Reducer extends Reducer<Text, Text, Text, Text> {
 
-	    static List<Text> days;
-	    static List<IntWritable> values;
-	    static IntWritable greatestSpike;
-	    static int indexOfDay1 = 0;
-	    static int indexOfDay2 = 0;
+	    private List<Text> days;
+	    private List<IntWritable> values;
+	    private IntWritable greatestSpike;
+	    private int indexOfDay1 = 0;
+	    private int indexOfDay2 = 0;
     
 	    /**
 	     * arguments:
@@ -201,7 +201,7 @@ public class WikiStatsJob1 {
 	    /*
 	     * A private method to parse the data reduce expects to perform calculations on better
 	     */
-	    public static void parserSet(Iterable<Text> data) {
+		private void parserSet(Iterable<Text> data) {
 		List<Text> days = new ArrayList<Text>();
 		List<IntWritable> values = new ArrayList<IntWritable>();
 
@@ -223,7 +223,7 @@ public class WikiStatsJob1 {
 		values = new ArrayList<IntWritable>(values);
 	    }
 
-	    private static void setSpike(){
+	    private void setSpike(){
 		IntWritable greatestSpikeA = new IntWritable(0);
 		IntWritable greatestSpikeB = new IntWritable(0);
 		IntWritable greatestSpikeMagnitude = new IntWritable(0);
@@ -254,6 +254,7 @@ public class WikiStatsJob1 {
 
 	    }
 	}
+	
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
 		String[] otherArgs = new GenericOptionsParser(conf, args)
