@@ -17,8 +17,8 @@ Two MapReduce jobs:
     <td>1</td>
     <td>Key: language + page
         <br/>The language is a two-character string. The page name is a string of characters.
-        <br/>The language and page are separated by a space.
-        <br/>Example: "en Main_Page"
+        <br/>The language and page are not separated by a space.
+        <br/>Example: "enMain_Page"
         <br/>Value: date + hour + pageviews
         <br/>The date is an 8-character string in the form YYYYMMDD. The hour is a two-character string. Pageviews is a string of characters.
         <br/>The date, hour, and pageviews are separated by spaces.
