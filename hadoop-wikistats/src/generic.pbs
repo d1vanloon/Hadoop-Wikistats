@@ -38,7 +38,7 @@ PACKAGENAME=cs5621.hadoop.wikistats
 
 # *** you will need to modify CLASSNAME for each assignment ***
 
-CLASSNAME=WikiStats
+CLASSNAME=WikiStatsJob1
 
 # location of local input directory 
 # *** you will need to modify this for each assignment ***
