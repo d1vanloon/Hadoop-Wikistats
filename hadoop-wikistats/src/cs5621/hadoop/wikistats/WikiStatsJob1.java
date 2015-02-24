@@ -4,9 +4,12 @@
 package cs5621.hadoop.wikistats;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -181,15 +184,19 @@ public class WikiStatsJob1 {
 	     *
 	     * Output:
 	     *    Max spike, Key
+	     * @throws InterruptedException 
+	     * @throws IOException 
 	     **/
-	    public void reduce(Text key, Iterable<Text> values, Context context) {
-	
-		parserSet(values);
-		setSpike(); 
-		Text value = new Text(days.get(indexOfDay1).toString() + " " + 
-				      days.get(indexOfDay2).toString() + " " + greatestSpike.toString());
-		context.write(key, value);
-	    }
+		public void reduce(Text key, Iterable<Text> values, Context context)
+				throws IOException, InterruptedException {
+
+			parserSet(values);
+			setSpike();
+			Text value = new Text(days.get(indexOfDay1).toString() + " "
+					+ days.get(indexOfDay2).toString() + " "
+					+ greatestSpike.toString());
+			context.write(key, value);
+		}
 
 	    /*
 	     * A private method to parse the data reduce expects to perform calculations on better
