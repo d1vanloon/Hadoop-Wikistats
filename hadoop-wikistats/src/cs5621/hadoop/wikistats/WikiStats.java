@@ -3,7 +3,6 @@
  */
 package cs5621.hadoop.wikistats;
 
-import java.awt.List;
 import java.util.ArrayList;
 
 import org.apache.hadoop.conf.Configuration;
