@@ -266,9 +266,9 @@ public class WikiStatsJob1 {
 		Job job = new Job(conf, "word count");
 		job.setJarByClass(WikiStatsJob1.class);
 		job.setMapperClass(WikiStatsJob1.Job1Mapper.class);
+		job.setReducerClass(WikiStatsJob1.Job1Reducer.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
-		job.setNumReduceTasks(0);
 		FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
 		FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
 		System.exit(job.waitForCompletion(true) ? 0 : 1);
