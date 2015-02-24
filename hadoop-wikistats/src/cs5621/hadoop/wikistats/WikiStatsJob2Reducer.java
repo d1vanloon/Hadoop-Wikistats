@@ -34,7 +34,8 @@ public class WikiStatsMap2Mapper extends Mapper<Text, Text, Text, LongWritable>{
 
 	private int spike = Integer.parseInt(temp.substring(3));
 
-	//private int topPages = foo;
+	Configuration conf = context.getConfiguration();
+	private int topPages = conf.get("NumberOfPages");
 
 	private int i = 0;
 

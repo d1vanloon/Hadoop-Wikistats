@@ -23,6 +23,12 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 public class WikiStats {
 	public static void main(String[] args) throws Exception {
 		// Verify proper command-line arguments.
+	        /*shouldn't we only be using 4 command line arguments?"
+		  if(args.length != 4){
+		        System.err.println("Ussage: WikiStats <in> <out>");
+			System.exit(2);
+			}
+		 */
 		if (args.length != 2) {
 			System.err.println("Usage: WikiStats <in> <out>");
 			System.exit(2);
@@ -41,7 +47,9 @@ public class WikiStats {
 		// The input for job 2 is the same as the output for job 1.
 		Path job2InputPath = job1OutputPath;
 		// The output for job 2 is the second command-line argument.
-		Path job2OutputPath = new Path(args[1]);
+		// "Stephen": Do we need a file output path necessarily?  It isn't specified and shouldn't the main
+		// program display the text needed?
+		//Path job2OutputPath = new Path(args[1]);
 		
 		// Holds a list of configured jobs.
 		JobControl jobController = new JobControl("wikistats");
@@ -70,6 +78,9 @@ public class WikiStats {
 		 */
 		
 		Configuration job2Configuration = new Configuration();
+		//job2Configuration.set("NumberOfPages", args[1]);
+		//job2Configuration.set("NumberOfLanguages", args[2]);
+		//job2Configuration.set("DayPeriod", args[3]);
 		Job job2 = Job.getInstance(job2Configuration, "job2");
 		// TODO: Conform job 2 to the following naming standards and uncomment.
 		//job2.setJarByClass(WikiStatsJob2.class);
