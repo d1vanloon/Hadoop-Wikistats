@@ -13,6 +13,7 @@ Two MapReduce jobs:
 
 <table>
 <tr><td>Job</td><td>Output of Map (Input of Reduce)</td><td>Output of Job (Input of Next Job)</td></tr>
+<tr><td>0</td><td>Key: TBD<br/>Value: TBD</td><td>Key: TBD<br/>Value: TBD</td></tr>
 <tr>
     <td>1</td>
     <td>Key: language + page
