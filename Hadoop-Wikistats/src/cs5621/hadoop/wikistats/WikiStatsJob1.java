@@ -156,9 +156,6 @@ public class WikiStatsJob1 {
 	    private List<Text> days;
 	    private List<IntWritable> values;
 	    private IntWritable greatestSpike;
-	    private int indexOfDay1 = 0;
-	    private int indexOfDay2 = 0;
-    
 	    /**
 	     * arguments:
 	     *    key: The Language of a page and the title of the page
@@ -224,8 +221,6 @@ public class WikiStatsJob1 {
 		}
 
 	    private void setSpike(){
-		IntWritable greatestSpikeA = new IntWritable(0);
-		IntWritable greatestSpikeB = new IntWritable(0);
 		IntWritable greatestSpikeMagnitude = new IntWritable(0);
 		for (int i = 0; i < days.size(); i++) {
 		    int lookBacks = 5;
@@ -233,25 +228,16 @@ public class WikiStatsJob1 {
 			lookBacks = i;
 		    }
 		    IntWritable currentGreatestSpike = new IntWritable(0);
-		    IntWritable currentA = new IntWritable(0);
-		    IntWritable currentB = new IntWritable(0);
 		    for (int j = 0; j < lookBacks; j++) {
 			if (values.get(i).get() - values.get(i - j).get() > currentGreatestSpike.get()) {
 			    currentGreatestSpike = new IntWritable(values.get(i).get() - values.get(i - j).get());
-			    currentA = new IntWritable(i - j);
-			    currentB = new IntWritable(i);
 			}
 		    }
 		    if (currentGreatestSpike.get() > greatestSpikeMagnitude.get()) {
 			greatestSpikeMagnitude = currentGreatestSpike;
-			greatestSpikeA = currentA;
-			greatestSpikeB = currentB;
 		    }
 		}
 		greatestSpike = greatestSpikeMagnitude;
-		indexOfDay1 = greatestSpikeA.get();
-		indexOfDay2 = greatestSpikeB.get();
-
 	    }
 	}
 	
@@ -263,7 +249,7 @@ public class WikiStatsJob1 {
 			System.err.println("Usage: WikiStatsJob1 <in> <out>");
 			System.exit(2);
 		}
-		Job job = new Job(conf, "word count");
+		Job job = new Job(conf, "wikistats");
 		job.setJarByClass(WikiStatsJob1.class);
 		job.setMapperClass(WikiStatsJob1.Job1Mapper.class);
 		job.setReducerClass(WikiStatsJob1.Job1Reducer.class);
