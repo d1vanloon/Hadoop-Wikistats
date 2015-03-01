@@ -1,16 +1,16 @@
 package cs5621.hadoop.wikistats;
 
-import java.util.ArrayList;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.jobcontrol.ControlledJob;
 import org.apache.hadoop.mapreduce.lib.jobcontrol.JobControl;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+import cs5621.hadoop.wikistats.WikiStatsJob1.Job1Mapper;
+import cs5621.hadoop.wikistats.WikiStatsJob1.Job1Reducer;
 
 /**
  * Job Control class and main
@@ -29,7 +29,7 @@ public class WikiStats {
 
 		Path job1InputPath = new Path(args[0]);
 		Path job1OutputPath = new Path("job1-output-temp");
-		Path job2InputPath = job1OutputPath
+		Path job2InputPath = job1OutputPath;
 		Path job2OutputPath = new Path(args[1]);
 
 		// Configuration set up
@@ -59,8 +59,9 @@ public class WikiStats {
 
 		Job job2 = new Job(conf2, "job2");
 		job2.setJarByClass(WikiStats.class);
-		job2.setMapperClass(Job2Mapper.class);
-		job2.setReducerClass(Job2Reducer.class);
+		// TODO: Configure Job 2 with correct class references
+		//job2.setMapperClass(Job2Mapper.class);
+		//job2.setReducerClass(Job2Reducer.class);
 		job2.setOutputKeyClass(Text.class);
 		job2.setOutputValueClass(Text.class);
 		FileInputFormat.addInputPath(job2, job2InputPath);
@@ -72,13 +73,13 @@ public class WikiStats {
 		ControlledJob cJob2 = new ControlledJob(job2.getConfiguration());
 		cJob1.setJob(job1);
 		cJob2.setJob(job2);
-		cJob2.addDependingJob(job1);
+		cJob2.addDependingJob(cJob1);
 
 		// Job Control set up
 
-		JobControl jobControl = new JobControl();
-		jobControl.addJob(job1);
-		jobControl.addJob(job2);
+		JobControl jobControl = new JobControl("WikiStats");
+		jobControl.addJob(cJob1);
+		jobControl.addJob(cJob2);
 
 		// run the job control in a thread
 
