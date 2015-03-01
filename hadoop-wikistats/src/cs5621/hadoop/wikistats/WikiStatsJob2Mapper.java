@@ -1,39 +1,45 @@
 package cs5621.hadoop.wikistats;
 
 import java.io.IOException;
+import java.lang.InterruptedException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
 
 /**
  * Mapper for Job 2.
- * @author Stephen Bernard
+ * @author Stephen Bernard, Yan Bai
  *
  */
 
-public class WikiStatsJob2Mapper extends Mapper<Text, LongWritable, Text, Text>{
+public class WikiStatsJob2Mapper extends Mapper<Text, Text, Text, Text>{
+    
+    private Text word = new Text();
 
-    private Text langSpike = new Text();
-    private Text page = new Text();
 
-    public void map(Text key, LongWritable value, Context context){
-	String temp = key.get();
-	String language = temp.substring(0, 2);
-	String pageStr = temp.substring(3);
-	String spike = Integer.toString(value.get());
+    //key format = "EnPageName"
+    //value format = "1238" spike in text
+    @Override
+    public void map(Text key, Text value, Context context)
+	throws IOException, InterruptedException{
+	
+	String line = key.toString();
+	String spike = value.toString();
 
-	langSpike.set(language + "," + spike);
+	//String length = strs.length + " ";
+	String lang = line.substring(0, 2);
+	String page = line.substring(2);
 
-	page.set(pageStr);
+	//Convert IntWritable value to String
+	
+	Text outputKey = new Text(lang);
+	Text outputValue = new Text(page + "," + spike);
 
-	context.write(langSpike, page);
+	context.write(outputKey, outputValue);
     }
 }
