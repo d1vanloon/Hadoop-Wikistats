@@ -77,16 +77,16 @@ public class WikiStatsJob1 {
 			 * For example:
 			 * 	pagecounts-20140601-000000.gz
 			 */
-		
+
 			String line = "";
 			String fileName;
 
 			try {
-			
+
 				/*
 				 * Parse the input line
 				 */
-			
+
 				// Grab the current line as a String from the input value
 				line = value.toString();
 				// Split the line into tokens by spaces
@@ -110,7 +110,7 @@ public class WikiStatsJob1 {
 				// Remove extra data from the hour token
 				fileNameTokens[HOUR_INDEX] = fileNameTokens[HOUR_INDEX]
 						.substring(HOUR_BEGIN_INDEX, HOUR_END_INDEX);
-	
+
 				/*
 				 * Send the data to the reducer
 				 */
@@ -120,11 +120,14 @@ public class WikiStatsJob1 {
 					// Write the output to the reduce function.
 					/*
 					 * Key: language + page 
-					 * The language is a two-character string. The page name is a string of characters. 
+					 * The language is a two-character string. 
+					 * The page name is a string of characters. 
 					 * The language and page are not separated by a space. 
 					 * Example: "enMain_Page" 
 					 * Value: date + hour + pageviews 
-					 * The date is an 8-character string in the form YYYYMMDD. The hour is a two-character string. Pageviews is a string of characters. 
+					 * The date is an 8-character string in the form YYYYMMDD. 
+					 * The hour is a two-character string. 
+					 * Pageviews is a string of characters. 
 					 * The date, hour, and pageviews are separated by spaces. 
 					 * Example: "20140601 00 156"
 					 */
@@ -144,18 +147,19 @@ public class WikiStatsJob1 {
 			}
 		}
 	}
-	
+
 	/**
 	 * Reducer class for Job 1.
 	 * 
 	 * @author Eric Christensen
 	 *
 	 */
-	public static class Job1Reducer extends Reducer<Text, Text, Text, IntWritable> {
+	public static class Job1Reducer extends
+			Reducer<Text, Text, Text, IntWritable> {
 
-	    private List<Text> days;
-	    private List<IntWritable> values;
-	    private IntWritable greatestSpike;
+		private List<Text> days;
+		private List<IntWritable> values;
+		private IntWritable greatestSpike;
 	    /**
 	     * arguments:
 	     *    key: The Language of a page and the title of the page
@@ -193,9 +197,10 @@ public class WikiStatsJob1 {
 			context.write(key, value);
 		}
 
-	    /*
-	     * A private method to parse the data reduce expects to perform calculations on better
-	     */
+		/*
+		 * A private method to parse the data reduce expects to perform
+		 * calculations on better
+		 */
 		private void parserSet(Iterable<Text> data) {
 			List<Text> dummydays = new ArrayList<Text>();
 			List<IntWritable> dummyvalues = new ArrayList<IntWritable>();
@@ -220,27 +225,37 @@ public class WikiStatsJob1 {
 			values = new ArrayList<IntWritable>(dummyvalues);
 		}
 
-	    private void setSpike(){
-		IntWritable greatestSpikeMagnitude = new IntWritable(0);
-		for (int i = 0; i < days.size(); i++) {
-		    int lookBacks = 5;
-		    if (i <= lookBacks) {
-			lookBacks = i;
-		    }
-		    IntWritable currentGreatestSpike = new IntWritable(0);
-		    for (int j = 0; j < lookBacks; j++) {
-			if (values.get(i).get() - values.get(i - j).get() > currentGreatestSpike.get()) {
-			    currentGreatestSpike = new IntWritable(values.get(i).get() - values.get(i - j).get());
+		private void setSpike() {
+			IntWritable greatestSpikeMagnitude = new IntWritable(0);
+			for (int i = 0; i < days.size(); i++) {
+				int lookBacks = 5;
+				if (i <= lookBacks) {
+					lookBacks = i;
+				}
+				IntWritable currentGreatestSpike = new IntWritable(0);
+				for (int j = 0; j < lookBacks; j++) {
+					if (values.get(i).get() - values.get(i - j).get() > currentGreatestSpike
+							.get()) {
+						currentGreatestSpike = new IntWritable(values.get(i)
+								.get() - values.get(i - j).get());
+					}
+				}
+				if (currentGreatestSpike.get() > greatestSpikeMagnitude.get()) {
+					greatestSpikeMagnitude = currentGreatestSpike;
+				}
 			}
-		    }
-		    if (currentGreatestSpike.get() > greatestSpikeMagnitude.get()) {
-			greatestSpikeMagnitude = currentGreatestSpike;
-		    }
+			greatestSpike = greatestSpikeMagnitude;
 		}
-		greatestSpike = greatestSpikeMagnitude;
-	    }
 	}
 	
+	/**
+	 * Tests WikiStatsJob1 as a stand-alone job.
+	 * 
+	 * @param args
+	 *            the command-line arguments
+	 * @throws Exception
+	 *             if an error is encountered
+	 */
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
 		String[] otherArgs = new GenericOptionsParser(conf, args)
