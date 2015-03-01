@@ -48,8 +48,8 @@ public class WikiStats {
 
 		Job job1 = new Job(conf1, "job1");
 		job1.setJarByClass(WikiStats.class);
-		job1.setMapperClass(Job1Mapper.class);
-		job1.setReducerClass(Job1Reducer.class);
+		job1.setMapperClass(WikiStatsJob1.Job1Mapper.class);
+		job1.setReducerClass(WikiStatsJob1.Job1Reducer.class);
 		job1.setOutputKeyClass(Text.class);
 		job1.setOutputValueClass(Text.class);
 		FileInputFormat.addInputPath(job1, job1InputPath);
@@ -59,9 +59,8 @@ public class WikiStats {
 
 		Job job2 = new Job(conf2, "job2");
 		job2.setJarByClass(WikiStats.class);
-		// TODO: Configure Job 2 with correct class references
-		//job2.setMapperClass(Job2Mapper.class);
-		//job2.setReducerClass(Job2Reducer.class);
+		job2.setMapperClass(WikiStatsJob2.Job2Mapper.class);
+		job2.setReducerClass(WikiStatsJob2.Job2Reducer.class);
 		job2.setOutputKeyClass(Text.class);
 		job2.setOutputValueClass(Text.class);
 		FileInputFormat.addInputPath(job2, job2InputPath);
