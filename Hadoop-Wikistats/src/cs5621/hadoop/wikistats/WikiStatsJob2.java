@@ -117,7 +117,7 @@ public class WikiStatsJob2 {
 						   throws IOException, InterruptedException {
 
 			Configuration conf = context.getConfiguration();
-			int numberOfPages = Integer.parseInt(conf.get("NumberOfPages"));
+			int numberOfPages = Integer.parseInt(conf.get(WikiStats.PAGES_PARAM_NAME));
 			String language = key.get();
 
 			int i = 0;

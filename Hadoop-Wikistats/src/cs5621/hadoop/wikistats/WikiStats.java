@@ -9,40 +9,51 @@ import org.apache.hadoop.mapreduce.lib.jobcontrol.ControlledJob;
 import org.apache.hadoop.mapreduce.lib.jobcontrol.JobControl;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import cs5621.hadoop.wikistats.WikiStatsJob1.Job1Mapper;
-import cs5621.hadoop.wikistats.WikiStatsJob1.Job1Reducer;
-
 /**
  * Job Control class and main
  * @author David Van Loon, Stephen Bernard
  */
 
 public class WikiStats {
+	static final String PERIOD_PARAM_NAME = "DayPeriod";
+	static final String LANGUAGES_PARAM_NAME = "NumberOfLanguages";
+	static final String PAGES_PARAM_NAME = "NumberOfPages";
+	private static final String JOB1_OUTPUT_TEMP = "job1-output-temp";
+	private static final int INPUT_ARGS_INDEX = 0;
+	private static final int OUTPUT_ARGS_INDEX = 1;
+	private static final int PAGES_ARGS_INDEX = 2;
+	private static final int LANGUAGES_ARGS_INDEX = 3;
+	private static final int PERIOD_ARGS_INDEX = 4;
+
 	public static void main(String[] args) throws Exception {
 
 		if(args.length != 5){
 			System.err.println("Usage: WikiStats <in> <out> <pages> <languages> <period>");
 			System.exit(-1);
 		}
+		
+		String pages = args[PAGES_ARGS_INDEX];
+		String languages = args[LANGUAGES_ARGS_INDEX];
+		String period = args[PERIOD_ARGS_INDEX];
 
 		// Path set up
 
-		Path job1InputPath = new Path(args[0]);
-		Path job1OutputPath = new Path("job1-output-temp");
+		Path job1InputPath = new Path(args[INPUT_ARGS_INDEX]);
+		Path job1OutputPath = new Path(JOB1_OUTPUT_TEMP);
 		Path job2InputPath = job1OutputPath;
-		Path job2OutputPath = new Path(args[1]);
+		Path job2OutputPath = new Path(args[OUTPUT_ARGS_INDEX]);
 
 		// Configuration set up
 
 		Configuration conf1 = new Configuration();
 		Configuration conf2 = new Configuration();
 
-		conf1.set("NumberOfPages", args[2]);
-		conf1.set("NumberOfLanguages", args[3]);
-		conf1.set("DayPeriod", args[4]);
-		conf2.set("NumberOfPages", args[2]);
-		conf2.set("NumberOfLanguages", args[3]);
-		conf2.set("DayPeriod", args[4]);
+		conf1.set(PAGES_PARAM_NAME, pages);
+		conf1.set(LANGUAGES_PARAM_NAME, languages);
+		conf1.set(PERIOD_PARAM_NAME, period);
+		conf2.set(PAGES_PARAM_NAME, pages);
+		conf2.set(LANGUAGES_PARAM_NAME, languages);
+		conf2.set(PERIOD_PARAM_NAME, period);
 
 		// Job 1 set up
 
