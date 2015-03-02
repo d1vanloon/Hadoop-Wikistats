@@ -15,14 +15,41 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
  */
 
 public class WikiStats {
+	/**
+	 * Parameter name for accessing the parameter DayPeriod.
+	 */
 	static final String PERIOD_PARAM_NAME = "DayPeriod";
+	/**
+	 * Parameter name for accessing the parameter NumberOfLanguages.
+	 */
 	static final String LANGUAGES_PARAM_NAME = "NumberOfLanguages";
+	/**
+	 * Parameter name for accessing the parameter NumberOfPages.
+	 */
 	static final String PAGES_PARAM_NAME = "NumberOfPages";
+	/**
+	 * Name of temporary output directory for Job 1.
+	 */
 	private static final String JOB1_OUTPUT_TEMP = "job1-output-temp";
+	/**
+	 * Argument index of the input path.
+	 */
 	private static final int INPUT_ARGS_INDEX = 0;
+	/**
+	 * Argument index of the output path.
+	 */
 	private static final int OUTPUT_ARGS_INDEX = 1;
+	/**
+	 * Argument index of the NumberOfPages argument.
+	 */
 	private static final int PAGES_ARGS_INDEX = 2;
+	/**
+	 * Argument index of the NumberOfLanguages argument.
+	 */
 	private static final int LANGUAGES_ARGS_INDEX = 3;
+	/**
+	 * Argument index of the DayPeriod argument.
+	 */
 	private static final int PERIOD_ARGS_INDEX = 4;
 
 	public static void main(String[] args) throws Exception {
