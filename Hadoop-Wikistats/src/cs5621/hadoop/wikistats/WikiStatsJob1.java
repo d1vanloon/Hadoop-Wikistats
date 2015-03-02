@@ -37,18 +37,57 @@ public class WikiStatsJob1 {
 	public static class Job1Mapper extends
 			Mapper<LongWritable, Text, Text, Text> {
 
+		/**
+		 * The number of tokens in the file name.
+		 */
 		private static final int FILE_NAME_TOKENS_COUNT = 3;
+		/**
+		 * The character length of a language designator.
+		 */
 		private static final int LANGUAGE_CHAR_LENGTH = 2;
+		/**
+		 * The end index of the hour.
+		 */
 		private static final int HOUR_END_INDEX = 2;
+		/**
+		 * The begin index of the hour.
+		 */
 		private static final int HOUR_BEGIN_INDEX = 0;
+		/**
+		 * The token delimiter of the file name.
+		 */
 		private static final String FILE_NAME_TOKEN_DELIMITER = "[-]+";
+		/**
+		 * The start of the file name.
+		 */
 		private static final String PAGECOUNTS = "pagecounts";
+		/**
+		 * The input line token delimiter.
+		 */
 		private static final String INPUT_LINE_TOKEN_DELIMITER = "[ ]+";
+		/**
+		 * The number of tokens in an input line.
+		 */
 		private static final int LINE_TOKENS_COUNT = 4;
+		/**
+		 * The index of the language.
+		 */
 		private static final int LANGUAGE_INDEX = 0;
+		/**
+		 * The index of the page name.
+		 */
 		private static final int PAGE_NAME_INDEX = 1;
+		/**
+		 * The index of the page views.
+		 */
 		private static final int VIEWS_INDEX = 2;
+		/**
+		 * The index of the date.
+		 */
 		private static final int DATE_INDEX = 1;
+		/**
+		 * The index of the hour.
+		 */
 		private static final int HOUR_INDEX = 2;
 
 		/*
@@ -157,6 +196,7 @@ public class WikiStatsJob1 {
 	public static class Job1Reducer extends
 			Reducer<Text, Text, Text, IntWritable> {
 
+		private static final String PERIOD_PARAM_DEFAULT = "5";
 		private List<Text> days;
 		private List<IntWritable> values;
 		private IntWritable greatestSpike;
@@ -190,9 +230,12 @@ public class WikiStatsJob1 {
 	     **/
 		public void reduce(Text key, Iterable<Text> oldValues, Context context)
 				throws IOException, InterruptedException {
+			Configuration conf = context.getConfiguration();
+			int days = Integer.parseInt(conf.get(WikiStats.PERIOD_PARAM_NAME,
+					PERIOD_PARAM_DEFAULT));
 
 			parserSet(oldValues);
-			setSpike();
+			setSpike(days);
 			IntWritable value = new IntWritable(greatestSpike.get());
 			context.write(key, value);
 		}
@@ -225,10 +268,10 @@ public class WikiStatsJob1 {
 			values = new ArrayList<IntWritable>(dummyvalues);
 		}
 
-		private void setSpike() {
+		private void setSpike(int dayPeriod) {
 			IntWritable greatestSpikeMagnitude = new IntWritable(0);
 			for (int i = 0; i < days.size(); i++) {
-				int lookBacks = 5;
+				int lookBacks = dayPeriod;
 				if (i <= lookBacks) {
 					lookBacks = i;
 				}
@@ -261,9 +304,10 @@ public class WikiStatsJob1 {
 		String[] otherArgs = new GenericOptionsParser(conf, args)
 				.getRemainingArgs();
 		if (otherArgs.length != 2) {
-			System.err.println("Usage: WikiStatsJob1 <in> <out>");
+			System.err.println("Usage: WikiStatsJob1 <in> <out> <days>");
 			System.exit(2);
 		}
+		conf.set(WikiStats.PERIOD_PARAM_NAME, args[2]);
 		Job job = new Job(conf, "wikistats");
 		job.setJarByClass(WikiStatsJob1.class);
 		job.setMapperClass(WikiStatsJob1.Job1Mapper.class);
