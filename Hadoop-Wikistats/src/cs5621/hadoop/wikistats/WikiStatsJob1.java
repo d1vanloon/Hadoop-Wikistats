@@ -324,33 +324,33 @@ public class WikiStatsJob1 {
 		//indexOfDay2 = greatestSpikeB.get();  REMOVE
 
 	    }
-	
-		/**
-		 * Tests WikiStatsJob1 as a stand-alone job.
-		 * 
-		 * @param args
-		 *            the command-line arguments
-		 * @throws Exception
-		 *             if an error is encountered
-		 */
-		public static void main(String[] args) throws Exception {
-			Configuration conf = new Configuration();
-			String[] otherArgs = new GenericOptionsParser(conf, args)
-					.getRemainingArgs();
-			if (otherArgs.length != 3) {
-				System.err.println("Usage: WikiStatsJob1 <in> <out> <days>");
-				System.exit(2);
-			}
-			conf.set(WikiStats.PERIOD_PARAM_NAME, args[2]);
-			Job job = new Job(conf, "wikistats");
-			job.setJarByClass(WikiStatsJob1.class);
-			job.setMapperClass(WikiStatsJob1.Job1Mapper.class);
-			job.setReducerClass(WikiStatsJob1.Job1Reducer.class);
-			job.setOutputKeyClass(Text.class);
-			job.setOutputValueClass(Text.class);
-			FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
-			FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
-			System.exit(job.waitForCompletion(true) ? 0 : 1);
+	}
+
+	/**
+	 * Tests WikiStatsJob1 as a stand-alone job.
+	 * 
+	 * @param args
+	 *            the command-line arguments
+	 * @throws Exception
+	 *             if an error is encountered
+	 */
+	public static void main(String[] args) throws Exception {
+		Configuration conf = new Configuration();
+		String[] otherArgs = new GenericOptionsParser(conf, args)
+				.getRemainingArgs();
+		if (otherArgs.length != 3) {
+			System.err.println("Usage: WikiStatsJob1 <in> <out> <days>");
+			System.exit(2);
 		}
+		conf.set(WikiStats.PERIOD_PARAM_NAME, args[2]);
+		Job job = new Job(conf, "wikistats");
+		job.setJarByClass(WikiStatsJob1.class);
+		job.setMapperClass(WikiStatsJob1.Job1Mapper.class);
+		job.setReducerClass(WikiStatsJob1.Job1Reducer.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(Text.class);
+		FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
+		FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
+		System.exit(job.waitForCompletion(true) ? 0 : 1);
 	}
 }
