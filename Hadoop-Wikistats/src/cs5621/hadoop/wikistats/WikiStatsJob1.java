@@ -231,11 +231,11 @@ public class WikiStatsJob1 {
 		public void reduce(Text key, Iterable<Text> oldValues, Context context)
 				throws IOException, InterruptedException {
 			Configuration conf = context.getConfiguration();
-			int days = Integer.parseInt(conf.get(WikiStats.PERIOD_PARAM_NAME,
+			int daysParam = Integer.parseInt(conf.get(WikiStats.PERIOD_PARAM_NAME,
 					PERIOD_PARAM_DEFAULT));
 
 			parserSet(oldValues);
-			setSpike(days);
+			setSpike(daysParam);
 			IntWritable value = new IntWritable(greatestSpike.get());
 			context.write(key, value);
 		}
@@ -281,7 +281,7 @@ public class WikiStatsJob1 {
 		}
 
 
-	    private void setSpike(){
+	    private void setSpike(int dayPeriod){
 		
 		//IntWritable greatestSpikeA = new IntWritable(0);  REMOVE
 		//IntWritable greatestSpikeB = new IntWritable(0);  REMOVE
@@ -290,7 +290,7 @@ public class WikiStatsJob1 {
 		// For every piece of data in a days worth of values
 		for (int i = 0; i < days.size(); i++) {
 		    // Initialize the number of days to look back and make comparisons to to five
-		    int lookBacks = 5;
+		    int lookBacks = dayPeriod;
 		    // If this iteration is less than the default set lookBacks to the value of the current iteration
 		    if (i <= lookBacks) {
 			lookBacks = i;
@@ -325,32 +325,32 @@ public class WikiStatsJob1 {
 
 	    }
 	
-	/**
-	 * Tests WikiStatsJob1 as a stand-alone job.
-	 * 
-	 * @param args
-	 *            the command-line arguments
-	 * @throws Exception
-	 *             if an error is encountered
-	 */
-	public static void main(String[] args) throws Exception {
-		Configuration conf = new Configuration();
-		String[] otherArgs = new GenericOptionsParser(conf, args)
-				.getRemainingArgs();
-		if (otherArgs.length != 2) {
-			System.err.println("Usage: WikiStatsJob1 <in> <out> <days>");
-			System.exit(2);
+		/**
+		 * Tests WikiStatsJob1 as a stand-alone job.
+		 * 
+		 * @param args
+		 *            the command-line arguments
+		 * @throws Exception
+		 *             if an error is encountered
+		 */
+		public static void main(String[] args) throws Exception {
+			Configuration conf = new Configuration();
+			String[] otherArgs = new GenericOptionsParser(conf, args)
+					.getRemainingArgs();
+			if (otherArgs.length != 2) {
+				System.err.println("Usage: WikiStatsJob1 <in> <out> <days>");
+				System.exit(2);
+			}
+			conf.set(WikiStats.PERIOD_PARAM_NAME, args[2]);
+			Job job = new Job(conf, "wikistats");
+			job.setJarByClass(WikiStatsJob1.class);
+			job.setMapperClass(WikiStatsJob1.Job1Mapper.class);
+			job.setReducerClass(WikiStatsJob1.Job1Reducer.class);
+			job.setOutputKeyClass(Text.class);
+			job.setOutputValueClass(Text.class);
+			FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
+			FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
+			System.exit(job.waitForCompletion(true) ? 0 : 1);
 		}
-		conf.set(WikiStats.PERIOD_PARAM_NAME, args[2]);
-		Job job = new Job(conf, "wikistats");
-		job.setJarByClass(WikiStatsJob1.class);
-		job.setMapperClass(WikiStatsJob1.Job1Mapper.class);
-		job.setReducerClass(WikiStatsJob1.Job1Reducer.class);
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(Text.class);
-		FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
-		FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
-		System.exit(job.waitForCompletion(true) ? 0 : 1);
 	}
-
 }
