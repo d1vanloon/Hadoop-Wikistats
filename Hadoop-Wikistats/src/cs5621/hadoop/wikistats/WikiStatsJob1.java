@@ -37,18 +37,57 @@ public class WikiStatsJob1 {
 	public static class Job1Mapper extends
 			Mapper<LongWritable, Text, Text, Text> {
 
+		/**
+		 * The number of tokens in the file name.
+		 */
 		private static final int FILE_NAME_TOKENS_COUNT = 3;
+		/**
+		 * The character length of a language designator.
+		 */
 		private static final int LANGUAGE_CHAR_LENGTH = 2;
+		/**
+		 * The end index of the hour.
+		 */
 		private static final int HOUR_END_INDEX = 2;
+		/**
+		 * The begin index of the hour.
+		 */
 		private static final int HOUR_BEGIN_INDEX = 0;
+		/**
+		 * The token delimiter of the file name.
+		 */
 		private static final String FILE_NAME_TOKEN_DELIMITER = "[-]+";
+		/**
+		 * The start of the file name.
+		 */
 		private static final String PAGECOUNTS = "pagecounts";
+		/**
+		 * The input line token delimiter.
+		 */
 		private static final String INPUT_LINE_TOKEN_DELIMITER = "[ ]+";
+		/**
+		 * The number of tokens in an input line.
+		 */
 		private static final int LINE_TOKENS_COUNT = 4;
+		/**
+		 * The index of the language.
+		 */
 		private static final int LANGUAGE_INDEX = 0;
+		/**
+		 * The index of the page name.
+		 */
 		private static final int PAGE_NAME_INDEX = 1;
+		/**
+		 * The index of the page views.
+		 */
 		private static final int VIEWS_INDEX = 2;
+		/**
+		 * The index of the date.
+		 */
 		private static final int DATE_INDEX = 1;
+		/**
+		 * The index of the hour.
+		 */
 		private static final int HOUR_INDEX = 2;
 
 		/*
@@ -77,16 +116,16 @@ public class WikiStatsJob1 {
 			 * For example:
 			 * 	pagecounts-20140601-000000.gz
 			 */
-		
+
 			String line = "";
 			String fileName;
 
 			try {
-			
+
 				/*
 				 * Parse the input line
 				 */
-			
+
 				// Grab the current line as a String from the input value
 				line = value.toString();
 				// Split the line into tokens by spaces
@@ -110,7 +149,7 @@ public class WikiStatsJob1 {
 				// Remove extra data from the hour token
 				fileNameTokens[HOUR_INDEX] = fileNameTokens[HOUR_INDEX]
 						.substring(HOUR_BEGIN_INDEX, HOUR_END_INDEX);
-	
+
 				/*
 				 * Send the data to the reducer
 				 */
@@ -120,11 +159,14 @@ public class WikiStatsJob1 {
 					// Write the output to the reduce function.
 					/*
 					 * Key: language + page 
-					 * The language is a two-character string. The page name is a string of characters. 
+					 * The language is a two-character string. 
+					 * The page name is a string of characters. 
 					 * The language and page are not separated by a space. 
 					 * Example: "enMain_Page" 
 					 * Value: date + hour + pageviews 
-					 * The date is an 8-character string in the form YYYYMMDD. The hour is a two-character string. Pageviews is a string of characters. 
+					 * The date is an 8-character string in the form YYYYMMDD. 
+					 * The hour is a two-character string. 
+					 * Pageviews is a string of characters. 
 					 * The date, hour, and pageviews are separated by spaces. 
 					 * Example: "20140601 00 156"
 					 */
@@ -144,28 +186,27 @@ public class WikiStatsJob1 {
 			}
 		}
 	}
-	
+
 	/**
 	 * Reducer class for Job 1.
 	 * 
 	 * @author Eric Christensen
 	 *
 	 */
-	public static class Job1Reducer extends Reducer<Text, Text, Text, Text> {
+	public static class Job1Reducer extends
+			Reducer<Text, Text, Text, IntWritable> {
 
-	    private List<Text> days;
-	    private List<IntWritable> values;
-	    private IntWritable greatestSpike;
-	    private int indexOfDay1 = 0;
-	    private int indexOfDay2 = 0;
-    
+		private static final String PERIOD_PARAM_DEFAULT = "5";
+		private List<Text> days;
+		private List<IntWritable> values;
+		private IntWritable greatestSpike;
 	    /**
 	     * arguments:
 	     *    key: The Language of a page and the title of the page
-	     *    values: the date and hour of the article along with the pagecount for the article
+	     *    oldValues: the date and hour of the article along with the pagecount for the article
 	     *    context: The place in which to write the output
 	     *
-	     * Note for Values:
+	     * Note for oldValues:
 	     *    There will 24 hour datums for each day
 	     *    There will be 60 days of data for each Key
 	     *    So there will be 1440 total value datums in values
@@ -187,85 +228,151 @@ public class WikiStatsJob1 {
 	     * @throws InterruptedException 
 	     * @throws IOException 
 	     **/
-		public void reduce(Text key, Iterable<Text> values, Context context)
+		public void reduce(Text key, Iterable<Text> oldValues, Context context)
 				throws IOException, InterruptedException {
+			Configuration conf = context.getConfiguration();
+			int days = Integer.parseInt(conf.get(WikiStats.PERIOD_PARAM_NAME,
+					PERIOD_PARAM_DEFAULT));
 
-			parserSet(values);
-			setSpike();
-			Text value = new Text(days.get(indexOfDay1).toString() + " "
-					+ days.get(indexOfDay2).toString() + " "
-					+ greatestSpike.toString());
+			parserSet(oldValues);
+			setSpike(days);
+			IntWritable value = new IntWritable(greatestSpike.get());
 			context.write(key, value);
 		}
 
-	    /*
+<<<<<<< HEAD:hadoop-wikistats/src/WikiStatsJob1.java
+	    /**
 	     * A private method to parse the data reduce expects to perform calculations on better
-	     */
+	     *
+	     **/
+=======
+		/*
+		 * A private method to parse the data reduce expects to perform
+		 * calculations on better
+		 */
+>>>>>>> 3fd67a3b41afa1e5115e37601d7404e61546c926:Hadoop-Wikistats/src/cs5621/hadoop/wikistats/WikiStatsJob1.java
 		private void parserSet(Iterable<Text> data) {
-			List<Text> dummydays = new ArrayList<Text>();
-			List<IntWritable> dummyvalues = new ArrayList<IntWritable>();
+		        // A List of Text to hold the local day variables
+			List<Text> dummyDays = new ArrayList<Text>();
+			// A List of IntWritables to hold the local value variables
+			List<IntWritable> dummyValues = new ArrayList<IntWritable>();
 
+			// For every line of data in the input values of reduce
 			for (Text line : data) {
+			        // Split the line up into an easily operatable array of strings
 				String[] words = line.toString().split(" ");
+				// The day of the line will be at the 0 index of the array
 				Text dayToAdd = new Text(words[0]);
+				// The page count value will be at the third index of the array
 				IntWritable intToAdd = new IntWritable(
 						Integer.parseInt(words[2]));
-
-				if (!dummydays.contains(dayToAdd)) {
-					dummydays.add(dayToAdd);
-					dummyvalues.add(intToAdd);
+				// Add the day of the current line to the list of days if it is not already present
+				//     Add the value to the list of values if this is the case
+				// If the day is already present in the list of days then simply add the value of the
+				//     current line to the same index that the current day is at in dummyValues
+				if (!dummyDays.contains(dayToAdd)) {
+					dummyDays.add(dayToAdd);
+					dummyValues.add(intToAdd);
 				} else {
-					IntWritable valueToAdd = new IntWritable(dummyvalues.get(
-							dummydays.indexOf(dayToAdd)).get()
+					IntWritable valueToAdd = new IntWritable(dummyValues.get(
+							dummyDays.indexOf(dayToAdd)).get()
 							+ intToAdd.get());
-					dummyvalues.set(dummydays.indexOf(dayToAdd), valueToAdd);
+					dummyValues.set(dummyDays.indexOf(dayToAdd), valueToAdd);
 				}
 			}
-			days = new ArrayList<Text>(dummydays);
-			values = new ArrayList<IntWritable>(dummyvalues);
+			// Put the local day data into reduce's global days list
+			days = new ArrayList<Text>(dummyDays);
+			// Put the local values data in to reduce's global values list
+			values = new ArrayList<IntWritable>(dummyValues);
 		}
 
+<<<<<<< HEAD:hadoop-wikistats/src/WikiStatsJob1.java
 	    private void setSpike(){
-		IntWritable greatestSpikeA = new IntWritable(0);
-		IntWritable greatestSpikeB = new IntWritable(0);
+		
+		//IntWritable greatestSpikeA = new IntWritable(0);  REMOVE
+		//IntWritable greatestSpikeB = new IntWritable(0);  REMOVE
+		// The local variable for the greatest spike
 		IntWritable greatestSpikeMagnitude = new IntWritable(0);
+		// For every piece of data in a days worth of values
 		for (int i = 0; i < days.size(); i++) {
+		    // Initialize the number of days to look back and make comparisons to to five
 		    int lookBacks = 5;
+		    // If this iteration is less than the default set lookBacks to the value of the current iteration
 		    if (i <= lookBacks) {
 			lookBacks = i;
 		    }
+		    // The local value for the greatest spike that will be used in the inner for loop
 		    IntWritable currentGreatestSpike = new IntWritable(0);
-		    IntWritable currentA = new IntWritable(0);
-		    IntWritable currentB = new IntWritable(0);
+		    //IntWritable currentA = new IntWritable(0);   REMOVE
+		    //IntWritable currentB = new IntWritable(0);   REMOVE
+
+		    // Iterate through each of the values that are a "lookBack" distance from the current iteration
 		    for (int j = 0; j < lookBacks; j++) {
+			// If the pagecount at the current iteration of i minus the page count of the
+			// iteration of i - j is greater than the currentGreatestSpike, then this new
+			// value becomes the current greatest spike
 			if (values.get(i).get() - values.get(i - j).get() > currentGreatestSpike.get()) {
 			    currentGreatestSpike = new IntWritable(values.get(i).get() - values.get(i - j).get());
-			    currentA = new IntWritable(i - j);
-			    currentB = new IntWritable(i);
+			    //currentA = new IntWritable(i - j);   REMOVE
+			    //currentB = new IntWritable(i);       REMOVE
 			}
 		    }
+		    // If the greatest spike from the inner for loop is greater than the current total greatest spike
+		    // then the overall greatest spike is set accordingly
 		    if (currentGreatestSpike.get() > greatestSpikeMagnitude.get()) {
 			greatestSpikeMagnitude = currentGreatestSpike;
-			greatestSpikeA = currentA;
-			greatestSpikeB = currentB;
+			//greatestSpikeA = currentA;  REMOVE
+			//greatestSpikeB = currentB;  REMOVE
 		    }
 		}
 		greatestSpike = greatestSpikeMagnitude;
-		indexOfDay1 = greatestSpikeA.get();
-		indexOfDay2 = greatestSpikeB.get();
+		//indexOfDay1 = greatestSpikeA.get();  REMOVE
+		//indexOfDay2 = greatestSpikeB.get();  REMOVE
 
 	    }
+=======
+		private void setSpike(int dayPeriod) {
+			IntWritable greatestSpikeMagnitude = new IntWritable(0);
+			for (int i = 0; i < days.size(); i++) {
+				int lookBacks = dayPeriod;
+				if (i <= lookBacks) {
+					lookBacks = i;
+				}
+				IntWritable currentGreatestSpike = new IntWritable(0);
+				for (int j = 0; j < lookBacks; j++) {
+					if (values.get(i).get() - values.get(i - j).get() > currentGreatestSpike
+							.get()) {
+						currentGreatestSpike = new IntWritable(values.get(i)
+								.get() - values.get(i - j).get());
+					}
+				}
+				if (currentGreatestSpike.get() > greatestSpikeMagnitude.get()) {
+					greatestSpikeMagnitude = currentGreatestSpike;
+				}
+			}
+			greatestSpike = greatestSpikeMagnitude;
+		}
+>>>>>>> 3fd67a3b41afa1e5115e37601d7404e61546c926:Hadoop-Wikistats/src/cs5621/hadoop/wikistats/WikiStatsJob1.java
 	}
 	
+	/**
+	 * Tests WikiStatsJob1 as a stand-alone job.
+	 * 
+	 * @param args
+	 *            the command-line arguments
+	 * @throws Exception
+	 *             if an error is encountered
+	 */
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
 		String[] otherArgs = new GenericOptionsParser(conf, args)
 				.getRemainingArgs();
 		if (otherArgs.length != 2) {
-			System.err.println("Usage: WikiStatsJob1 <in> <out>");
+			System.err.println("Usage: WikiStatsJob1 <in> <out> <days>");
 			System.exit(2);
 		}
-		Job job = new Job(conf, "word count");
+		conf.set(WikiStats.PERIOD_PARAM_NAME, args[2]);
+		Job job = new Job(conf, "wikistats");
 		job.setJarByClass(WikiStatsJob1.class);
 		job.setMapperClass(WikiStatsJob1.Job1Mapper.class);
 		job.setReducerClass(WikiStatsJob1.Job1Reducer.class);

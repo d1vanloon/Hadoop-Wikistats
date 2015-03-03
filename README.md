@@ -2,13 +2,27 @@
 Project 1 for CS5621 at the University of Minnesota, Duluth
 
 ## Deadlines
-* Job 1 working by 2/27
+* Project complete by 3/9
 
 ## Architecture
 Three MapReduce jobs:
-* Job 0: Identify the top M languages (Bai)
-* Job 1: Identify largest spike for each page (David, Eric)
+* Job 0: Identify the top M languages (largest number of unique pages) (Bai)
+* Job 1: Identify largest spike for each page over O days (David, Eric)
 * Job 2: Identify N pages from the top M languages with the largest spikes (Bai, Stephen)
+
+## Inputs
+* (N) Number of pages to return
+* (O) Length of spike to determine
+* (M) Number of top languages to return
+
+## Outputs
+For each of the N pages:
+* Page language
+* Page name
+* Size of spike
+* Number of unique pages for each language
+
+Results should be sorted by page count of language.
 
 ## Interfaces
 
