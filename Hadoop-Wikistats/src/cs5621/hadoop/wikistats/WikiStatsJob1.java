@@ -337,7 +337,7 @@ public class WikiStatsJob1 {
 			Configuration conf = new Configuration();
 			String[] otherArgs = new GenericOptionsParser(conf, args)
 					.getRemainingArgs();
-			if (otherArgs.length != 2) {
+			if (otherArgs.length != 3) {
 				System.err.println("Usage: WikiStatsJob1 <in> <out> <days>");
 				System.exit(2);
 			}
