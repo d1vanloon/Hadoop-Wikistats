@@ -240,17 +240,11 @@ public class WikiStatsJob1 {
 			context.write(key, value);
 		}
 
-<<<<<<< HEAD:hadoop-wikistats/src/WikiStatsJob1.java
-	    /**
-	     * A private method to parse the data reduce expects to perform calculations on better
-	     *
-	     **/
-=======
+
 		/*
 		 * A private method to parse the data reduce expects to perform
 		 * calculations on better
 		 */
->>>>>>> 3fd67a3b41afa1e5115e37601d7404e61546c926:Hadoop-Wikistats/src/cs5621/hadoop/wikistats/WikiStatsJob1.java
 		private void parserSet(Iterable<Text> data) {
 		        // A List of Text to hold the local day variables
 			List<Text> dummyDays = new ArrayList<Text>();
@@ -286,7 +280,7 @@ public class WikiStatsJob1 {
 			values = new ArrayList<IntWritable>(dummyValues);
 		}
 
-<<<<<<< HEAD:hadoop-wikistats/src/WikiStatsJob1.java
+
 	    private void setSpike(){
 		
 		//IntWritable greatestSpikeA = new IntWritable(0);  REMOVE
@@ -330,30 +324,6 @@ public class WikiStatsJob1 {
 		//indexOfDay2 = greatestSpikeB.get();  REMOVE
 
 	    }
-=======
-		private void setSpike(int dayPeriod) {
-			IntWritable greatestSpikeMagnitude = new IntWritable(0);
-			for (int i = 0; i < days.size(); i++) {
-				int lookBacks = dayPeriod;
-				if (i <= lookBacks) {
-					lookBacks = i;
-				}
-				IntWritable currentGreatestSpike = new IntWritable(0);
-				for (int j = 0; j < lookBacks; j++) {
-					if (values.get(i).get() - values.get(i - j).get() > currentGreatestSpike
-							.get()) {
-						currentGreatestSpike = new IntWritable(values.get(i)
-								.get() - values.get(i - j).get());
-					}
-				}
-				if (currentGreatestSpike.get() > greatestSpikeMagnitude.get()) {
-					greatestSpikeMagnitude = currentGreatestSpike;
-				}
-			}
-			greatestSpike = greatestSpikeMagnitude;
-		}
->>>>>>> 3fd67a3b41afa1e5115e37601d7404e61546c926:Hadoop-Wikistats/src/cs5621/hadoop/wikistats/WikiStatsJob1.java
-	}
 	
 	/**
 	 * Tests WikiStatsJob1 as a stand-alone job.
