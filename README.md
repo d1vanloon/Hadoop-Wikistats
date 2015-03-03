@@ -40,7 +40,7 @@ Results should be sorted by page count of language.
         <br/>The date, hour, and pageviews are separated by spaces.
         <br/>Example: "20140601 00 156"</td>
     <td>Key: language + page<br/>Value: spike:
-        <br/>spike will be in form of "StartDateofSpike endDateOfSpike valueOfSpike" </td>
+        <br/>spike will be in form of "valueOfSpike" </td>
     </tr>
 <tr><td>2</td><td>Key: language<br/>Value: page + spike</td><td>TBD</td></tr>
 </table>
