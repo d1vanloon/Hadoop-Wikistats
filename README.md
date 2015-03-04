@@ -50,4 +50,4 @@ Shared WikiStats data location:
 
     /lustre/vanlo013/project1/data/wikistats/pageviews/dumps.wikimedia.org/other/pagecounts-raw/2014
 
-All data from June-August 2014 is in subfolders (e.g. 2014-06 to 2014-08). All files from WikiStats are included (both pagecounts and projectcounts data). I've added permissions for the group to traverse the directories and read the data and can add additional permissions as required. Email me at <vanlo013@d.umn.edu> with questions.
+All data from June-August 2014 is in subfolders (e.g. 2014-06 to 2014-08). I've added permissions for the group to traverse the directories and read the data and can add additional permissions as required. Email me at <vanlo013@d.umn.edu> with questions.
