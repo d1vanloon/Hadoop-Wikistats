@@ -9,9 +9,12 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.WritableComparator;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -56,8 +59,8 @@ public class WikiStatsJob2 {
 	//We include spike in key,but we need to partition data only by lang code in key.
 	public static class SortSpikePartitioner extends Partitioner<Text, Text>{
 
-		@Override
-		public int getPartition(Text key, Text value, int numPartitions){
+	@Override
+       	public int getPartition(Text key, Text value, int numPartitions){
 			return (key.toString().substring(0,2).hashCode()) % numPartitions;
 		}
 
@@ -118,14 +121,14 @@ public class WikiStatsJob2 {
 
 			Configuration conf = context.getConfiguration();
 			int numberOfPages = Integer.parseInt(conf.get(WikiStats.PAGES_PARAM_NAME));
-			String language = key.get();
+			String language = key.toString();
 
 			int i = 0;
 
 			if(numberOfPages > 0){
 
 				for(Text val : values){
-					String temp = val.get();
+					String temp = val.toString();
 					int split = temp.lastIndexOf(",");
 					String page = temp.substring(0, split);
 					String spike = temp.substring(split + 1);
