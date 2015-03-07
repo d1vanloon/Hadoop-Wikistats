@@ -43,11 +43,11 @@ CLASSNAME=WikiStats
 # location of local input directory 
 # *** you will need to modify this for each assignment ***
 
-LOCALINPUT=/lustre/vanlo013/project1/data/wikistats/pageviews/dumps.wikimedia.org/other/pagecounts-raw/2014/
+LOCALINPUT=/panfs/roc/scratch/vanlo013/project1/inputdata/*
 
 # location of local output directory
 
-LOCALOUTPUT=/lustre/$USER/jobOutput/
+LOCALOUTPUT=/panfs/roc/scratch/$USER/project1/outputdata
 
 # location of hdfs directories, these will be on local
 # scratch and not visible to you except in log messages
