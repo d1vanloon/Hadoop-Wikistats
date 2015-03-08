@@ -32,6 +32,11 @@
 #PBS -o generic.o
 #PBS -q batch
 
+# Inputs of task
+PAGES=10
+LANGUAGES=8
+PERIOD=4
+
 # variables to set for this run 
 
 PACKAGENAME=cs5621.hadoop.wikistats
@@ -96,7 +101,7 @@ hadoop fs -ls $HDFSINPUT
 # run the program!
 # if you add command line arguments you'll need to add them here
 
-hadoop jar $CLASSNAME.jar $PACKAGENAME.$CLASSNAME $HDFSINPUT 10 5 5
+hadoop jar $CLASSNAME.jar $PACKAGENAME.$CLASSNAME $HDFSINPUT $PAGES $LANGUAGES $PERIOD
 
 # display results file in generic.o
 
