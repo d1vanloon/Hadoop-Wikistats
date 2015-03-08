@@ -26,7 +26,7 @@
 # to have a total of 500 GB of hard disk space available (at a minimum).
 
 #PBS -l nodes=8:ppn=8,pmem=2gb
-#PBS -l walltime=00:01:00
+#PBS -l walltime=01:00:00
 #PBS -m abe
 #PBS -e generic.e
 #PBS -o generic.o
