@@ -112,7 +112,7 @@ mkdir $LOCALOUTPUT
 
 # copy from hdfs to local file system
 
-hadoop fs -get $HDFSOUTPUT/part* $LOCALOUTPUT
+hadoop fs -get $HDFSOUTPUT/job4/part* $LOCALOUTPUT
 
 # now delete HDFS files - they will probably go away when your job
 # ends, but just in case.
