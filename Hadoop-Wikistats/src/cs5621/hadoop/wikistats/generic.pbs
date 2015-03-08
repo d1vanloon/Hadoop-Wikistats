@@ -96,7 +96,7 @@ hadoop fs -ls $HDFSINPUT
 # run the program!
 # if you add command line arguments you'll need to add them here
 
-hadoop jar $CLASSNAME.jar $PACKAGENAME.$CLASSNAME $HDFSINPUT $HDFSOUTPUT 10 5 5
+hadoop jar $CLASSNAME.jar $PACKAGENAME.$CLASSNAME $HDFSINPUT 10 5 5
 
 # display results file in generic.o
 
