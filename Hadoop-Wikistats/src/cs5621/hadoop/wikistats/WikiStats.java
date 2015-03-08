@@ -105,7 +105,7 @@ public class WikiStats {
 		Path job3InputPath = job1OutputPath;
 		Path job3OutputPath = new Path("output" + JOB_3_SUBFOLDER);
 		Path job4InputPath_1 = job2OutputPath;
-		Path job4InputPath_2 = job2OutputPath;
+		Path job4InputPath_2 = job3OutputPath;
 		Path job4OutputPath = new Path("output" + JOB_4_SUBFOLDER);
 
 		// Configuration set up
