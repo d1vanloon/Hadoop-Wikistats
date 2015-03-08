@@ -1,6 +1,3 @@
-/**
- * 
- */
 package cs5621.hadoop.wikistats;
 
 import java.io.IOException;

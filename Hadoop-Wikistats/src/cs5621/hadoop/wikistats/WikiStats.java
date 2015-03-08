@@ -56,21 +56,17 @@ public class WikiStats {
 	 */
 	private static final int INPUT_ARGS_INDEX = 0;
 	/**
-	 * Argument index of the output path.
-	 */
-	private static final int OUTPUT_ARGS_INDEX = 1;
-	/**
 	 * Argument index of the NumberOfPages argument.
 	 */
-	private static final int PAGES_ARGS_INDEX = 2;
+	private static final int PAGES_ARGS_INDEX = 1;
 	/**
 	 * Argument index of the NumberOfLanguages argument.
 	 */
-	private static final int LANGUAGES_ARGS_INDEX = 3;
+	private static final int LANGUAGES_ARGS_INDEX = 2;
 	/**
 	 * Argument index of the DayPeriod argument.
 	 */
-	private static final int PERIOD_ARGS_INDEX = 4;
+	private static final int PERIOD_ARGS_INDEX = 3;
 	/**
 	 * Job 1 output directory.
 	 */
@@ -88,9 +84,10 @@ public class WikiStats {
 	 */
 	private static final String JOB_4_SUBFOLDER = "/job4";
 
+	
 	public static void main(String[] args) throws Exception {
 
-		if(args.length != 5){
+		if(args.length != 4){
 			System.err.println("Usage: WikiStats <in> <out> <pages> <languages> <period>");
 			System.exit(-1);
 		}
@@ -102,12 +99,14 @@ public class WikiStats {
 		// Path set up
 
 		Path job1InputPath = new Path(args[INPUT_ARGS_INDEX]);
-		Path job1OutputPath = new Path(args[OUTPUT_ARGS_INDEX] + JOB_1_SUBFOLDER);
+		Path job1OutputPath = new Path("output" + JOB_1_SUBFOLDER);
 		Path job2InputPath = job1OutputPath;
-		Path job2OutputPath = new Path(args[OUTPUT_ARGS_INDEX] + JOB_2_SUBFOLDER);
+		Path job2OutputPath = new Path("output" + JOB_2_SUBFOLDER);
 		Path job3InputPath = job1OutputPath;
-		Path job3OutputPath = new Path(args[OUTPUT_ARGS_INDEX] + JOB_3_SUBFOLDER);
-		Path job4OutputPath = new Path(args[OUTPUT_ARGS_INDEX] + JOB_4_SUBFOLDER);
+		Path job3OutputPath = new Path("output" + JOB_3_SUBFOLDER);
+		Path job4InputPath_1 = job2OutputPath;
+		Path job4InputPath_2 = job2OutputPath;
+		Path job4OutputPath = new Path("output" + JOB_4_SUBFOLDER);
 
 		// Configuration set up
 
@@ -128,7 +127,6 @@ public class WikiStats {
 		conf3.set(PAGES_PARAM_NAME, pages);
 		conf3.set(LANGUAGES_PARAM_NAME, languages);
 		conf3.set(PERIOD_PARAM_NAME, period);
-		conf4.set("mapred.textoutputformat.separator", ";");
 		conf4.set(PAGES_PARAM_NAME, pages);
 		conf4.set(LANGUAGES_PARAM_NAME, languages);
 		conf4.set(PERIOD_PARAM_NAME, period);
@@ -137,8 +135,7 @@ public class WikiStats {
 
 		/*
 		 * Job 1 calculates the spike over O date range.
-		 */
-		
+		 */	
 		Job job1 = new Job(conf1, "job1");
 		job1.setJarByClass(WikiStats.class);
 		job1.setMapperClass(WikiStatsJob1.Job1Mapper.class);
@@ -197,40 +194,10 @@ public class WikiStats {
 		job4.setMapOutputValueClass(Text.class);
 		job4.setOutputKeyClass(Text.class);
 		job4.setOutputValueClass(Text.class);
-		FileInputFormat.addInputPath(job4, job3OutputPath);
-		FileInputFormat.addInputPath(job4, job2OutputPath);
+		FileInputFormat.addInputPath(job4, job4InputPath_1);
+		FileInputFormat.addInputPath(job4, job4InputPath_2);
 		FileOutputFormat.setOutputPath(job4, job4OutputPath);
-		job4.waitForCompletion(true);
-		
-			
-		// Controlled job set up, dependency for jobs 2, 3
-		/*
-		ControlledJob cJob1 = new ControlledJob(job1.getConfiguration());
-		ControlledJob cJob2 = new ControlledJob(job2.getConfiguration());
-		ControlledJob cJob3 = new ControlledJob(job3.getConfiguration());
-		cJob1.setJob(job1);
-		cJob2.setJob(job2);
-		cJob3.setJob(job3);
-		cJob2.addDependingJob(cJob1);
-		cJob3.addDependingJob(cJob1);
-
-		// Job Control set up
-
-		JobControl jobControl = new JobControl("WikiStats");
-		jobControl.addJob(cJob1);
-		jobControl.addJob(cJob2);
-		jobControl.addJob(cJob3);
-
-		// run the job control in a thread
-
-		Thread t = new Thread(jobControl);
-		t.start();
-
-		// Wait until all jobs are complete
-		while(!jobControl.allFinished())
-			Thread.sleep(5000);
-		
-		*/
+		job4.waitForCompletion(true);	
 
 		System.exit(0);
 	}

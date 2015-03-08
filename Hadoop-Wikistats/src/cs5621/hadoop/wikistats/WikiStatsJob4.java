@@ -13,6 +13,20 @@ import java.util.TreeMap;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+/**
+ * Job class for Job 4.
+ *
+ * @author Yan Bai
+ *
+ * The goal of this job is to generate the final result based on outputs of job 2 and job 3.
+ * Output of job 2 includes top N pages for each languages.
+ * Output of job 3 includes number of unique page for each languages.
+ * So in job 4, we need to do 2 things:
+ * 	1. Based on output of job 3, rank languages based on number of unique page to get top M languages. 
+ *  2. After 1, we have top M languages. Then we read output of job 2, filter out all records rather than
+ *     Top M languages.
+ */
+
 public class WikiStatsJob4{
 
 	public static class Job4Mapper extends Mapper<Object, Text, IntWritable, Text>{
@@ -30,18 +44,19 @@ public class WikiStatsJob4{
 											Configuration conf = context.getConfiguration();
 											int M = Integer.parseInt(conf.get(WikiStats.LANGUAGES_PARAM_NAME));
 											
-											//Store top M languages in descending order
+											//This array is used for storing top M languages in descending order. Just code of languages.
 											String[] topLangs = new String[M];					
 											
 											//Used for sorting all languages to find top M languages
 											TreeMap<Integer, String> allLangs = new TreeMap<Integer, String>();					
 											
-											//HashMap to store top N pages for all languages. Then we will just pick N pages for top M languages from it
+											//HashMap to store top N pages for all languages. We will go through
+											//this map and pick just records for top M languages.
 										  ArrayList<String> allPages = new ArrayList<String>();
 											
-											//Go through all datas.
-											//Push language data to allLangs TreeMap.
-											//Push page data to allPages HashMap.
+											//Go through all input datas.
+											//Push language data(output of job 3) to allLangs TreeMap.
+											//Push page data(output of job 2) to allPages HashMap. 
 											String str = null;
 											String[] strs = null;
 											for(Text value : values){
@@ -54,7 +69,11 @@ public class WikiStatsJob4{
 															}
 											}
 
-											//Pop elements in the MapTree, just keep last M elements which represent Top M languages.
+											/**
+											 * In the TreeMap, key is the number of unique page, value is the code of language.
+											 * And TreeMap sort data in ascending order, so we just need to pop datas on the head,
+											 * and keey last M items. That will be top M languages.
+											 */
 											int numOfLangs = allLangs.size();
 											for(int i=0; i<numOfLangs-M; i++){
 													allLangs.pollFirstEntry();
@@ -67,12 +86,17 @@ public class WikiStatsJob4{
 													topLangs[CopyOfM-1] = langCode;
 													CopyOfM--;	
 											}
-
+											
+											/**
+											 * Create HashMap with size of M. Each item in HashMap is a linkedlist
+											 * to store top N pages. 
+											 */
 										  HashMap<String, LinkedList> pagesMap = new HashMap<String, LinkedList>();
 											for(int j=0; j<topLangs.length; j++){
 													pagesMap.put(topLangs[j], new LinkedList<String>());
 											}
-
+											
+											// Push top N pages of each languages to HashMap.
 											for(int k=0; k<allPages.size(); k++){
 													String line = allPages.get(k);
 													String[] strsInLine = line.split(";");
@@ -83,10 +107,9 @@ public class WikiStatsJob4{
 											}
 
 
-											//write top N pages to output
+											// write top N pages of top M languages to output
 											for(int m=0; m<topLangs.length; m++){
 													LinkedList pageList = pagesMap.get(topLangs[m]);
-													//context.write( new Text(topLangs[k]), new Text( Integer.toString(pageList.size())) );
 													while(!pageList.isEmpty()){
 															context.write( new Text(topLangs[m]), new Text((String)pageList.poll()) );
 													}
