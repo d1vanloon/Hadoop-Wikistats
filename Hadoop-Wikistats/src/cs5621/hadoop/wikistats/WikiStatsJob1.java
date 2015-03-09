@@ -20,7 +20,10 @@ import org.apache.hadoop.util.GenericOptionsParser;
 /**
  * Job class for Job 1.
  * 
- * @author David Van Loon
+ * This job identifies the largest spike for each page over a given number of
+ * days.
+ * 
+ * @author David Van Loon, Eric Christensen
  *
  */
 public class WikiStatsJob1 {
