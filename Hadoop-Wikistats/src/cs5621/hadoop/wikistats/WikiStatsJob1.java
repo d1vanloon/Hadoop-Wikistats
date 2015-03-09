@@ -280,8 +280,6 @@ public class WikiStatsJob1 {
 
 	    private void setSpike(int dayPeriod){
 		
-		//IntWritable greatestSpikeA = new IntWritable(0);  REMOVE
-		//IntWritable greatestSpikeB = new IntWritable(0);  REMOVE
 		// The local variable for the greatest spike
 		IntWritable greatestSpikeMagnitude = new IntWritable(0);
 		// For every piece of data in a days worth of values
@@ -294,8 +292,6 @@ public class WikiStatsJob1 {
 		    }
 		    // The local value for the greatest spike that will be used in the inner for loop
 		    IntWritable currentGreatestSpike = new IntWritable(0);
-		    //IntWritable currentA = new IntWritable(0);   REMOVE
-		    //IntWritable currentB = new IntWritable(0);   REMOVE
 
 		    // Iterate through each of the values that are a "lookBack" distance from the current iteration
 		    for (int j = 0; j < lookBacks; j++) {
@@ -304,22 +300,15 @@ public class WikiStatsJob1 {
 			// value becomes the current greatest spike
 			if (values.get(i).get() - values.get(i - j).get() > currentGreatestSpike.get()) {
 			    currentGreatestSpike = new IntWritable(values.get(i).get() - values.get(i - j).get());
-			    //currentA = new IntWritable(i - j);   REMOVE
-			    //currentB = new IntWritable(i);       REMOVE
 			}
 		    }
 		    // If the greatest spike from the inner for loop is greater than the current total greatest spike
 		    // then the overall greatest spike is set accordingly
 		    if (currentGreatestSpike.get() > greatestSpikeMagnitude.get()) {
 			greatestSpikeMagnitude = currentGreatestSpike;
-			//greatestSpikeA = currentA;  REMOVE
-			//greatestSpikeB = currentB;  REMOVE
 		    }
 		}
 		greatestSpike = greatestSpikeMagnitude;
-		//indexOfDay1 = greatestSpikeA.get();  REMOVE
-		//indexOfDay2 = greatestSpikeB.get();  REMOVE
-
 	    }
 	}
 
