@@ -154,6 +154,7 @@ public class WikiStatsJob2 {
 		public void reduce(Text key, Iterable<Text> values, Context context)
 						   throws IOException, InterruptedException {
 
+			Configuration conf = context.getConfiguration();
 			int numberOfPages = Integer.parseInt(conf.get(WikiStats.PAGES_PARAM_NAME));
 			//numberOfPages = 5;
 			String lang = key.toString().substring(0,2);
