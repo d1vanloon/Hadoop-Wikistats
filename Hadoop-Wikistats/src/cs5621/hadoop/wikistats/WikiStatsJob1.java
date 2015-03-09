@@ -20,13 +20,26 @@ import org.apache.hadoop.util.GenericOptionsParser;
 /**
  * Job class for Job 1.
  * 
- * @author David Van Loon
+ * This job identifies the largest spike for each page over a given number of
+ * days.
+ * 
+ * @author David Van Loon, Eric Christensen
  *
  */
 public class WikiStatsJob1 {
 
 	/**
 	 * Mapper class for Job 1.
+	 * 
+	 * The map step in Job 1 processes each line of input, extracting key data
+	 * elements and passing them to the reduce step. The function first reads
+	 * the input line and splits it into pieces, carefully choosing the correct
+	 * elements from the line. The language, page name, and views are chosen
+	 * from the input line. The function takes similar action on the filename
+	 * from which the input data was read, extracting key elements by splitting
+	 * it into pieces. The date and hour are chosen from the file name. The map
+	 * function sends the information to the reduce step, grouped by language
+	 * and page name.
 	 * 
 	 * @author David Van Loon
 	 *

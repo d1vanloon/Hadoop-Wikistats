@@ -34,7 +34,11 @@ import java.util.Map.Entry;
 import java.net.URI;
 
 /**
- * Job Control class and main
+ * Main project class.
+ * 
+ * This class configures each job with all required parameters. It also runs the
+ * jobs, taking into account all dependencies.
+ * 
  * @author David Van Loon, Stephen Bernard
  */
 
@@ -88,7 +92,7 @@ public class WikiStats {
 	public static void main(String[] args) throws Exception {
 
 		if(args.length != 4){
-			System.err.println("Usage: WikiStats <in> <out> <pages> <languages> <period>");
+			System.err.println("Usage: WikiStats <in> <pages> <languages> <period>");
 			System.exit(-1);
 		}
 		
