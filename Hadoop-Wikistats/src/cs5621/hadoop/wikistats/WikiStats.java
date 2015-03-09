@@ -127,6 +127,7 @@ public class WikiStats {
 		conf3.set(PAGES_PARAM_NAME, pages);
 		conf3.set(LANGUAGES_PARAM_NAME, languages);
 		conf3.set(PERIOD_PARAM_NAME, period);
+		conf4.set("mapred.textoutputformat.separator", " ");
 		conf4.set(PAGES_PARAM_NAME, pages);
 		conf4.set(LANGUAGES_PARAM_NAME, languages);
 		conf4.set(PERIOD_PARAM_NAME, period);

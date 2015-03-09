@@ -103,7 +103,7 @@ public class WikiStatsJob4{
 					String codeOfLang = strsInLine[0];
 					String nameOfPage = strsInLine[1];
 					String accessOfPage = strsInLine[2];
-					if(pagesMap.containsKey(codeOfLang))pagesMap.get(codeOfLang).add(nameOfPage+";"+accessOfPage);
+					if(pagesMap.containsKey(codeOfLang))pagesMap.get(codeOfLang).add(nameOfPage+" "+accessOfPage);
 			}
 
 
