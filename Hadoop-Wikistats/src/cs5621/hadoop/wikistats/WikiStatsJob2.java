@@ -23,8 +23,7 @@ import org.apache.hadoop.util.GenericOptionsParser;
 
 /**
  *
- * @author Stephen Bernard, Yan Bai
- *
+ * @author Stephen Bernard
  */
 
 public class WikiStatsJob2 {
@@ -120,6 +119,8 @@ public class WikiStatsJob2 {
 			String aLang = aString.substring(0,2);
 			String bLang = bString.substring(0,2);
 
+			// Initialize spikes to 1 as to not throw NumberFormatException
+
 			int aSpike = 1;
 			int bSpike = 1;
 			
@@ -131,6 +132,7 @@ public class WikiStatsJob2 {
 					e.printStackTrace();	
 			}
 			if(!aLang.equals(bLang))
+			        // Group accordingly if not in same language
 				return aLang.compareTo(bLang); 
 			else
 				// sort the spikes if in the same language
