@@ -37,19 +37,19 @@ public class WikiStatsJob2 {
     	public void map(LongWritable key, Text value, Context context)
 						throws IOException, InterruptedException {
 	
-		String line = value.toString();
-		String[] strs = line.split(";");
+						String line = value.toString();
+						String[] strs = line.split(";");
 
-		String lang = strs[0].substring(0, 2);
-		String page = strs[0].substring(2);
-		String spike = strs[1];
+						String lang = strs[0].substring(0, 2);
+						String page = strs[0].substring(2);
+						String spike = strs[1];
 
-		//Convert IntWritable value to String
-	
-		Text outputKey = new Text(lang + spike);
-		Text outputValue = new Text(page + ";" + spike);
+						//Convert IntWritable value to String
+					
+						Text outputKey = new Text(lang + spike);
+						Text outputValue = new Text(page + ";" + spike);
 
-		context.write(outputKey, outputValue);
+						context.write(outputKey, outputValue);
     	}
 	}
 
@@ -64,7 +64,7 @@ public class WikiStatsJob2 {
 
 	}	
 
-  	//Grouping class
+  //Grouping class
 	//This class controls which keys are grouped together for a single call to Reducer.reduce()
 	public static class GroupingComparator extends WritableComparator{
 
@@ -126,7 +126,6 @@ public class WikiStatsJob2 {
 
 			Configuration conf = context.getConfiguration();
 			int numberOfPages = Integer.parseInt(conf.get(WikiStats.PAGES_PARAM_NAME));
-			//numberOfPages = 5;
 			String lang = key.toString().substring(0,2);
 
 			int i = 0;

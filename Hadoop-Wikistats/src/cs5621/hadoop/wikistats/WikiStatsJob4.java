@@ -22,13 +22,24 @@ import java.util.Map.Entry;
  * Output of job 2 includes top N pages for each languages.
  * Output of job 3 includes number of unique page for each languages.
  * So in job 4, we need to do 2 things:
- * 	1. Based on output of job 3, rank languages based on number of unique page to get top M languages. 
+ * 	1. Based on output of job 3, rank languages based on number of unique paged and then pick top M languages. 
  *  2. After 1, we have top M languages. Then we read output of job 2, filter out all records rather than
  *     Top M languages.
+ *
+ * Then we get our final output.
  */
 
 public class WikiStatsJob4{
 
+	/**
+	 * Mapper Class for Job 4.
+	 *
+	 *@author Yan Bai
+	 *
+	 * In the map function, we just emit the value to reducer. Key is a IntWritable 0.
+	 * Actully, we will not process key in reducer and we just ignore it. All data emitted
+	 * fro Mapper own same key so they will go into same reducer.
+	 */ 
 	public static class Job4Mapper extends Mapper<Object, Text, IntWritable, Text>{
 
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
@@ -37,6 +48,19 @@ public class WikiStatsJob4{
 	
 	}
 	
+	/**
+	 * Reducer class for Job 4.
+	 *
+	 * @author Yan Bai
+	 *
+	 * All the output of job 2 and job 3 will come into one reducer since in mapper, the output is key is 0.
+	 * That is what we want. Because we need all output data of job 2 and job 3 to generate final result.
+	 *
+	 * Procedure of reduce:
+	 * 1.Based on the output of job 3, we will get top M most common languages.
+	 * 2.Based on top M most common languages we just got and output of job 2, we will get top N pages of top M most common languages.
+	 * 3.Write output. 
+	 */ 
 	public static class Job4Reducer extends Reducer<IntWritable, Text, Text, Text> {
 
 		public void reduce(IntWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {

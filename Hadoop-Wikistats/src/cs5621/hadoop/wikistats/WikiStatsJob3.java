@@ -21,12 +21,19 @@ public class WikiStatsJob3{
 	/*
 	 * Mapper of Job 3.
 	 *
+	 * @author Yan Bai
+	 *
 	 * Input Key: Language+PageName. For example: enComputer
 	 * Input Value: Largest spike of this page.
 	 * 
 	 * Output Key: Language(Text)
 	 * Output Value: 1(IntWritable)
 	 * 
+	 * The input of mapper is the page name, largest spike of the page and language of this page. Notice
+	 * the pages here are unique pages. So for getting number of unique pages for each languages, we need to
+	 * make all the records for one language go into one reducer. And then count the number of records in reducer,
+	 * then will number of unique pages for given language.
+	 *
 	 * In map function, extract first two characters of key and take it as key of mapper output.
 	 * The mapper output value is just an IntWritable. Actually it could be everything. 
 	 */
@@ -42,7 +49,9 @@ public class WikiStatsJob3{
 	}
 	
 	/*
-	 *Reducer of Job 3.
+	 * Reducer of Job 3.
+	 *
+	 * @author Yan Bai
 	 *
 	 * Input Key: Language(Text)
 	 * Input Value: 1(IntWritable)
@@ -55,6 +64,8 @@ public class WikiStatsJob3{
 	 */
 	public static class Job3Reducer extends Reducer<Text,IntWritable,Text,IntWritable> {
 
+		//Define an Integer counter. For each income record, left counter equals to counter+1.
+		//The final value of counter is the number of unique pages for given language. 
 		public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
 				int counter = 0;
 				for(IntWritable value : values){
