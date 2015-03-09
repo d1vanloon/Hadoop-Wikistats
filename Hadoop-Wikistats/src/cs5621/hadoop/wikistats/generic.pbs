@@ -25,8 +25,8 @@
 # as you have input data. If your input data is 100 GB, then you probably want
 # to have a total of 500 GB of hard disk space available (at a minimum).
 
-#PBS -l nodes=8:ppn=8,pmem=2gb
-#PBS -l walltime=01:00:00
+#PBS -l nodes=24:ppn=8,pmem=2gb
+#PBS -l walltime=10:00:00
 #PBS -m abe
 #PBS -e generic.e
 #PBS -o generic.o
@@ -34,8 +34,8 @@
 
 # Inputs of task
 PAGES=10
-LANGUAGES=8
-PERIOD=4
+LANGUAGES=5
+PERIOD=10
 
 # variables to set for this run 
 
@@ -52,7 +52,7 @@ LOCALINPUT=/panfs/roc/scratch/vanlo013/project1/inputdata/*
 
 # location of local output directory
 
-LOCALOUTPUT=/panfs/roc/scratch/$USER/project1/outputdata
+LOCALOUTPUT=/panfs/roc/scratch/$USER/team1outputdata
 
 # location of hdfs directories, these will be on local
 # scratch and not visible to you except in log messages
