@@ -49,16 +49,17 @@ public class WikiStatsJob2 {
     	public void map(LongWritable key, Text value, Context context)
 						throws IOException, InterruptedException {
 	
-		String line = key.toString();
+		String line = value.toString();
+		String[] strs = line.split(";");
 
 		//Split up key into language and page name
 
-		String lang = line.substring(0, 2);
-		String page = line.substring(2);
+		String lang = strs[0].substring(0, 2);
+		String page = strs[0].substring(2);
 
 		//Set spike to our value
 		
-		String spike = value.toString();
+		String spike = strs[1];
 
 		//Convert aboves strings to our desired keys and values
 	
@@ -174,7 +175,7 @@ public class WikiStatsJob2 {
 	 * Input Value: PageName + ";" + Spike(Text)
 	 *
 	 * Output Key: Language+PageName
-	 * Output Value: Largest Spike for the page
+	 * Output Value: PageName + ";" + Spike(Text)
 	 */
 	public static class Job2Reducer extends Reducer<Text, Text, Text, Text> {
 
@@ -194,12 +195,8 @@ public class WikiStatsJob2 {
 				//In our for loop, go only across the numberOfPages on the top.
 				//Format the pairs as we need for Job 3.
 				for(Text val : values){
-					String compositeValue = val.toString();
-					int splitIndex = compositeValue.lastIndexOf(";") + 1;
-					String spike = compositeValue.substring(splitIndex);
-					String pageName = compositeValue.substring(0, splitIndex - 1);
-					context.write(new Text(lang + pageName), new Text(spike));
-					i++;
+				    context.write(new Text(lang), val);
+				    i++;
 
 					if(i >= numberOfPages)
 						break;
