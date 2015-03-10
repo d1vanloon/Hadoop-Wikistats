@@ -30,6 +30,8 @@ public class WikiStatsJob2 {
 
 
 	/**
+	 * @author Stephen Bernard
+	 *
 	 * Mapper of Job 2.
 	 *
 	 * Input key: Language+Pagename. For example: enComputer
@@ -49,10 +51,13 @@ public class WikiStatsJob2 {
 	
 		String line = key.toString();
 
-		//Split up 
+		//Split up key into language and page name
 
 		String lang = line.substring(0, 2);
 		String page = line.substring(2);
+
+		//Set spike to our value
+		
 		String spike = value.toString();
 
 		//Convert aboves strings to our desired keys and values
@@ -64,9 +69,11 @@ public class WikiStatsJob2 {
     	}
 	}
 
-	/** 
+        /**
+         * @author Stephen Bernard
+	 *
 	 * Partitioner class
-	 * We include spike in key,but we need to partition data only by lang code in key.
+	 * We include spike in key, but we need to partition data only by lang code in key.
 	 */
 	public static class SortSpikePartitioner extends Partitioner<Text, Text>{
 
@@ -77,9 +84,15 @@ public class WikiStatsJob2 {
 
 	}	
 
-  	//Grouping class
-	//This class controls which keys are grouped together for a single call to Reducer.reduce()
+    /**
+     * @author Stephen Bernard
+     *
+     * Grouping class
+     * This class controls which keys are grouped together for a single call to Reducer.reduce()
+     */
 	public static class GroupingComparator extends WritableComparator{
+
+	    // call the super class
 
 		public GroupingComparator(){
 				super(Text.class, true);
@@ -90,6 +103,9 @@ public class WikiStatsJob2 {
 		 */
 		@Override
 		public int compare(WritableComparable a, WritableComparable b){
+		    
+		    // Get the string versions of our writableComparables.
+		    // Next compare them
 			Text ta = (Text)a;
 			Text tb = (Text)b;
 			String sa = ta.toString();
@@ -99,7 +115,11 @@ public class WikiStatsJob2 {
 		}
 	}
 
-	//Secondary sort class
+    /**
+     * @author Stephen Bernard
+     *
+     * Secondary sort class
+     */
 	public static class SortComparator extends WritableComparator{
 
 		public SortComparator(){
@@ -111,10 +131,14 @@ public class WikiStatsJob2 {
 		 */
 		@Override
 		public int compare(WritableComparable a, WritableComparable b){
+
+		    // As we did in the Grouping, we get the String versions of WritableComparables
 			Text aText = (Text)a;
 			Text bText = (Text)b;
 			String aString = aText.toString();
 			String bString = bText.toString();
+
+			// Next, get our langauges
 			
 			String aLang = aString.substring(0,2);
 			String bLang = bString.substring(0,2);
@@ -142,6 +166,8 @@ public class WikiStatsJob2 {
 	}
 
 	/**
+	 * @author Stephen Bernard
+	 *
 	 * Reducer of Job 2
 	 *
 	 * Input Key: Language+Spike(Text)
